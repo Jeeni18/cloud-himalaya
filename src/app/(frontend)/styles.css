@@ -1,0 +1,993 @@
+@import 'tailwindcss';
+
+/*
+ * Semantic color tokens (CLAUDE.md section 7). Provisional values pending
+ * company brand approval -- change only these variables, never hard-code
+ * a hex value in a component.
+ *
+ * Accent usage rule (WCAG AA): the accent blue measures ~4.2:1 against
+ * Background/Surface, which fails AA for normal text (needs 4.5:1) and
+ * even white-on-accent button text is right at the 4.5:1 edge. Only use
+ * the accent color as large/bold text (>=19px bold) or as a button
+ * background with a bold label -- never as small regular-weight text
+ * directly on Background or Surface.
+ */
+:root {
+  --chw-background: #f4f7fc;
+  --chw-surface: #ffffff;
+  --chw-text-primary: #0b1530;
+  --chw-text-secondary: #5a6683;
+  --chw-accent: #2f6bff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chw-background: #070b16;
+    --chw-surface: #0e1527;
+    --chw-text-primary: #ffffff;
+    --chw-text-secondary: #9aa6c4;
+    --chw-accent: #2f6bff;
+  }
+}
+
+/* Manual override for a future light/dark toggle, independent of the OS setting. */
+:root[data-theme='light'] {
+  --chw-background: #f4f7fc;
+  --chw-surface: #ffffff;
+  --chw-text-primary: #0b1530;
+  --chw-text-secondary: #5a6683;
+  --chw-accent: #2f6bff;
+}
+
+:root[data-theme='dark'] {
+  --chw-background: #070b16;
+  --chw-surface: #0e1527;
+  --chw-text-primary: #ffffff;
+  --chw-text-secondary: #9aa6c4;
+  --chw-accent: #2f6bff;
+}
+
+@theme {
+  --color-background: var(--chw-background);
+  --color-surface: var(--chw-surface);
+  --color-text-primary: var(--chw-text-primary);
+  --color-text-secondary: var(--chw-text-secondary);
+  --color-accent: var(--chw-accent);
+
+  --font-display: var(--font-geist), ui-sans-serif, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /*
+   * Fixed type scale (CLAUDE.md section 7). Defined once here, used
+   * everywhere via Tailwind's text-* utilities -- never a hard-coded
+   * font-size elsewhere. The largest sizes get negative letter-spacing,
+   * a standard technique to keep big display type feeling tight and
+   * premium rather than loose.
+   */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+  --text-4xl--letter-spacing: -0.01em;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1.1;
+  --text-5xl--letter-spacing: -0.015em;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1.05;
+  --text-6xl--letter-spacing: -0.02em;
+
+  /*
+   * Radii. Used by the Button/Container/Section base components instead
+   * of ad hoc `rounded-*` choices scattered per component.
+   */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+}
+
+/*
+ * Spacing scale: deliberately NOT redefined here. Tailwind's own spacing
+ * scale (4px base unit) is already a single, consistent, well-tested
+ * system -- declaring a parallel one would add a second source of truth
+ * instead of removing one. This comment is the record of that decision.
+ */
+
+/*
+ * New homepage design tokens (docs/LANDING_PAGE_SPEC.md). Deliberately a
+ * separate set of CSS variables from the --chw-* tokens above, switched
+ * by a `.dark` class (next-themes) rather than the `data-theme`
+ * attribute/media query the --chw-* tokens use. The two systems don't
+ * interact: pages outside the new homepage keep using --chw-* unchanged.
+ * "Fixed in both modes" colors from the spec (final CTA block, hero rack
+ * unit internals) are intentionally not tokens here -- the spec lists
+ * them as a named exception to "never hard-code a color."
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Matches "a laptop screen with not much vertical room" -- 1024px+ wide
+ * (so it never fires on a stacked phone/tablet layout, which already
+ * gets its own treatment) but under 820px tall, the kind of viewport a
+ * scaled-up Windows laptop display produces. Used by Hero.tsx and
+ * ServerRack.tsx to trim the hero down so it still fits in one screen.
+ */
+@custom-variant short-laptop (@media (max-height: 820px) and (min-width: 1024px));
+
+:root {
+  --lp-bg: #ffffff;
+  --lp-alt: #f2f7fc;
+  --lp-surface: #ffffff;
+  --lp-nav-bg: rgba(255, 255, 255, 0.96);
+  --lp-line: #e3eaf3;
+  --lp-line-strong: #c4d4e6;
+  --lp-text: #1a2b44;
+  --lp-head: #0b1f3a;
+  --lp-muted: #3a4d66;
+  --lp-subtle: #4a5d75;
+  --lp-primary: #0954a6;
+  --lp-on-primary: #ffffff;
+  --lp-accent: #0954a6;
+  --lp-soft: #e6f2fb;
+  --lp-announce: #063a75;
+  --lp-announce-text: #dcebfa;
+  --lp-hero-bg: #f2f7fc;
+  --lp-ridge-1: #dceaf7;
+  --lp-ridge-2: #ffffff;
+  --lp-snow: #ffffff;
+  --lp-rack-bg: #0b1f3a;
+  --lp-rack-border: #0b1f3a;
+  --lp-rack-unit-bg: #0e2546;
+  --lp-rack-unit-border: #1d3a63;
+  --lp-rack-chip-bg: #ffffff;
+  --lp-rack-chip-text: #0b1f3a;
+  --lp-rack-accent-bg: #0954a6;
+  --lp-rack-accent-text: #ffffff;
+  --lp-led: #1e9e5a;
+  --lp-feature: #0954a6;
+  --lp-feature-text: #ffffff;
+  --lp-feature-muted: #dcebfa;
+  --lp-feature-accent: #ffffff;
+  --lp-feature-border: #5e93cc;
+  --lp-band: #0b1f3a;
+  --lp-band-surface: #0f2747;
+  --lp-band-border: #24456f;
+  --lp-band-text: #ffffff;
+  --lp-band-muted: #c4d3e6;
+  --lp-band-accent: #7cc7ee;
+  --lp-p1: #b3261e;
+  --lp-p2: #a15c00;
+  --lp-footer-bg: #103d70;
+  --lp-footer-text: #dcebfa;
+  --lp-footer-line: #1e5596;
+  --lp-shadow-lg: 0 30px 70px rgba(9, 84, 166, 0.22);
+  --lp-shadow-sm: 0 12px 32px rgba(9, 84, 166, 0.1);
+}
+
+.dark {
+  --lp-bg: #050f1f;
+  --lp-alt: #081830;
+  --lp-surface: #0a1e3b;
+  --lp-nav-bg: rgba(5, 15, 31, 0.96);
+  --lp-line: #1d3a63;
+  --lp-line-strong: #2a4a75;
+  --lp-text: #d5e2f2;
+  --lp-head: #ffffff;
+  --lp-muted: #b4c6dd;
+  --lp-subtle: #8ea6c4;
+  --lp-primary: #29a3dc;
+  --lp-on-primary: #04121f;
+  --lp-accent: #5cc2f0;
+  --lp-soft: #0f2a4d;
+  --lp-announce: #0954a6;
+  --lp-announce-text: #ffffff;
+  --lp-hero-bg: #050f1f;
+  --lp-ridge-1: #0a1e3b;
+  --lp-ridge-2: #050f1f;
+  --lp-snow: #1d3a63;
+  --lp-rack-bg: #0f2238;
+  --lp-rack-border: #365873;
+  --lp-rack-unit-bg: #1b3652;
+  --lp-rack-unit-border: #365873;
+  --lp-rack-chip-bg: #294c6c;
+  --lp-rack-chip-text: #f1f8ff;
+  --lp-rack-accent-bg: #35a9e0;
+  --lp-rack-accent-text: #0e2236;
+  --lp-led: #3dd68c;
+  --lp-feature: #0a2142;
+  --lp-feature-text: #ffffff;
+  --lp-feature-muted: #b4c6dd;
+  --lp-feature-accent: #5cc2f0;
+  --lp-feature-border: #29a3dc;
+  --lp-band: #081830;
+  --lp-band-surface: #0a1e3b;
+  --lp-band-border: #1d3a63;
+  --lp-band-text: #ffffff;
+  --lp-band-muted: #b4c6dd;
+  --lp-band-accent: #5cc2f0;
+  --lp-p1: #ff8a80;
+  --lp-p2: #ffc266;
+  --lp-footer-bg: #142b45;
+  --lp-footer-text: #b4c6dd;
+  --lp-footer-line: #13284a;
+  --lp-shadow-lg: 0 30px 70px rgba(0, 0, 0, 0.55);
+  --lp-shadow-sm: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+@theme inline {
+  --color-bg: var(--lp-bg);
+  --color-alt: var(--lp-alt);
+  --color-surface: var(--lp-surface);
+  --color-nav-bg: var(--lp-nav-bg);
+  --color-line: var(--lp-line);
+  --color-line-strong: var(--lp-line-strong);
+  --color-text: var(--lp-text);
+  --color-head: var(--lp-head);
+  --color-muted: var(--lp-muted);
+  --color-subtle: var(--lp-subtle);
+  --color-primary: var(--lp-primary);
+  --color-on-primary: var(--lp-on-primary);
+  --color-accent: var(--lp-accent);
+  --color-soft: var(--lp-soft);
+  --color-announce: var(--lp-announce);
+  --color-announce-text: var(--lp-announce-text);
+  --color-hero-bg: var(--lp-hero-bg);
+  --color-ridge-1: var(--lp-ridge-1);
+  --color-ridge-2: var(--lp-ridge-2);
+  --color-snow: var(--lp-snow);
+  --color-rack-bg: var(--lp-rack-bg);
+  --color-rack-border: var(--lp-rack-border);
+  --color-rack-unit-bg: var(--lp-rack-unit-bg);
+  --color-rack-unit-border: var(--lp-rack-unit-border);
+  --color-rack-chip-bg: var(--lp-rack-chip-bg);
+  --color-rack-chip-text: var(--lp-rack-chip-text);
+  --color-rack-accent-bg: var(--lp-rack-accent-bg);
+  --color-rack-accent-text: var(--lp-rack-accent-text);
+  --color-led: var(--lp-led);
+  --color-feature: var(--lp-feature);
+  --color-feature-text: var(--lp-feature-text);
+  --color-feature-muted: var(--lp-feature-muted);
+  --color-feature-accent: var(--lp-feature-accent);
+  --color-feature-border: var(--lp-feature-border);
+  --color-band: var(--lp-band);
+  --color-band-surface: var(--lp-band-surface);
+  --color-band-border: var(--lp-band-border);
+  --color-band-text: var(--lp-band-text);
+  --color-band-muted: var(--lp-band-muted);
+  --color-band-accent: var(--lp-band-accent);
+  --color-p1: var(--lp-p1);
+  --color-p2: var(--lp-p2);
+  --color-footer-bg: var(--lp-footer-bg);
+  --color-footer-text: var(--lp-footer-text);
+  --color-footer-line: var(--lp-footer-line);
+
+  --shadow-lp-lg: var(--lp-shadow-lg);
+  --shadow-lp-sm: var(--lp-shadow-sm);
+
+  /*
+   * SectionHeading level=1 -- a plain page-title H1 (currently only
+   * /about-us's intro), not the homepage hero (Hero.tsx has its own,
+   * separately-tuned clamp). Sized bigger than h2 below but not
+   * hero-scale, so it doesn't dominate a normal scrolling page.
+   */
+  --text-lp-h1: clamp(1.875rem, 1.3rem + 2.1vw, 3rem);
+  --text-lp-h1--line-height: 1.05;
+  --text-lp-h1--letter-spacing: -0.025em;
+  /* Responsive-homepage spec's exact numbers for every section heading
+     below the hero (SectionHeading.tsx) -- defined once here, so every
+     section picks it up just by using that shared component. */
+  --text-lp-h2: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+  --text-lp-h2--line-height: 1.08;
+  --text-lp-h2--letter-spacing: -0.025em;
+  --text-lp-h3: clamp(1.25rem, 1rem + 0.8vw, 1.6rem);
+  --text-lp-h3--line-height: 1.15;
+  --text-lp-h3--letter-spacing: -0.015em;
+}
+
+/*
+ * Hero tokens from the Figma hero design (docs/figma-hero-notes.md).
+ * Only hero-sky (the horizon-glow gradient) and hero-night (the hero
+ * section's own background) are still used, by HeroScene/Hero -- the
+ * rest (hero-deep, hero-text, hero-muted, hero-on-brand, hero-glow, the
+ * Montserrat/Open Sans fonts) backed the Figma hero's own nav/wordmark/
+ * buttons, which this homepage no longer uses, and were removed.
+ */
+:root {
+  --hero-sky: #1478b0;
+  --hero-night: #e4f0fa;
+}
+
+.dark {
+  --hero-sky: #2ea3db;
+  --hero-night: #203f60;
+}
+
+/*
+ * Shared container spacing for every homepage section below the hero
+ * (ClientLogos, AboutPreview, ServicesListPreview, DataCenterPreview,
+ * InsightsPreview, ContactPreview) -- defined once and reused via
+ * arbitrary-value classes (px-[var(--section-x)], py-[var(--section-y)])
+ * rather than each section hard-coding its own padding step.
+ */
+:root {
+  --section-x: clamp(1rem, 4vw, 2rem);
+  --section-y: clamp(3rem, 6vw, 6rem);
+}
+
+/*
+ * Homepage section band colors (docs/design/landing-preview.html), one
+ * pair per section below the hero. Deliberately separate from --lp-alt
+ * (the single "alternate" shade the old homepage sections used) -- the
+ * new design alternates through a longer, named sequence instead.
+ */
+:root {
+  --section-trust: #eef5fb;
+  --section-about: #e4f0fa;
+  --section-services: #bcd5ec;
+  /*
+   * Unlike the other section bands, this one is a light medium-blue in
+   * light mode and a richer, darker blue in dark mode -- so its text
+   * tokens flip from dark-on-light to light-on-dark between themes,
+   * rather than staying one fixed color like the rest of the page.
+   */
+  --section-dc: #9dbedd;
+  --section-dc-text: #0b2e57;
+  --section-dc-muted: #163f69;
+  --section-dc-accent: #0954a6;
+  --section-insights: #eef5fb;
+  --section-insights-text: #0b1f3a;
+  --section-insights-card: #ffffff;
+  --section-careers: #d1e1ef;
+  /*
+   * Contact Us is a solid blue band in both modes (not a pale tint like
+   * the others), so its heading uses the existing SectionHeading
+   * "inverted" (always-white) tone -- only the muted body text and the
+   * primary CTA need their own tokens here, since those two do change
+   * between light and dark.
+   */
+  --section-contact: #0954a6;
+  --section-contact-muted: #e4f0fa;
+  --section-contact-cta-bg: #ffffff;
+  --section-contact-cta-text: #0954a6;
+}
+
+.dark {
+  --section-trust: #192f49;
+  --section-about: #142b45;
+  --section-services: #294c6c;
+  --section-dc: #0954a6;
+  --section-dc-text: #ffffff;
+  --section-dc-muted: #d9ebf9;
+  --section-dc-accent: #78d0fa;
+  /*
+   * The Insights band is a bright cyan even in dark mode, so its own
+   * heading text stays dark (not the usual light dark-mode text), and
+   * its post cards use a darker navy than the rest of the page's dark
+   * cards so they still read as cards against that bright background.
+   */
+  --section-insights: #35a9e0;
+  --section-insights-text: #0e2236;
+  --section-insights-card: #1b3652;
+  --section-careers: #142b45;
+  --section-contact: #294c6c;
+  --section-contact-muted: #bcd2e4;
+  --section-contact-cta-bg: #35a9e0;
+  --section-contact-cta-text: #0e2236;
+}
+
+@theme inline {
+  --color-section-trust: var(--section-trust);
+  --color-section-about: var(--section-about);
+  --color-section-services: var(--section-services);
+  --color-section-dc: var(--section-dc);
+  --color-section-dc-text: var(--section-dc-text);
+  --color-section-dc-muted: var(--section-dc-muted);
+  --color-section-dc-accent: var(--section-dc-accent);
+  --color-section-insights: var(--section-insights);
+  --color-section-insights-text: var(--section-insights-text);
+  --color-section-insights-card: var(--section-insights-card);
+  --color-section-careers: var(--section-careers);
+  --color-section-contact: var(--section-contact);
+  --color-section-contact-muted: var(--section-contact-muted);
+  --color-section-contact-cta-bg: var(--section-contact-cta-bg);
+  --color-section-contact-cta-text: var(--section-contact-cta-text);
+}
+
+/*
+ * Top contact bar (TopBar.tsx) and header (Header.tsx) sizing, both read
+ * by those two components' own `top`/`height` so there's one definition
+ * instead of several numbers to keep in sync by hand. --topbar-h drops
+ * to 0 below sm (640px), where TopBar hides itself entirely, so Header
+ * slides up to the very top rather than leaving a gap. --header-h steps
+ * from 4rem (64px) up to 4.5rem (72px) at lg (1024px). --sticky-offset
+ * (the combined height, used for scroll-margin-top below and read at
+ * runtime by useActiveNavHref.ts via the header's own bounding box) is
+ * derived from both rather than a separate hardcoded value.
+ */
+:root {
+  --topbar-h: 0rem;
+  --header-h: 4rem;
+  --sticky-offset: calc(var(--topbar-h) + var(--header-h));
+  --topbar-bg: #0954a6;
+  --topbar-text: #ffffff;
+  --topbar-hover: #d9ebf9;
+  --nav-active-bg: #e4f0fa;
+  --nav-active-text: #0954a6;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --topbar-h: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 4.5rem;
+  }
+}
+
+.dark {
+  --topbar-bg: #142b45;
+  --topbar-text: #bcd2e4;
+  --topbar-hover: #55bdf0;
+  --nav-active-bg: #294c6c;
+  --nav-active-text: #f1f8ff;
+}
+
+@theme inline {
+  --color-topbar-bg: var(--topbar-bg);
+  --color-topbar-text: var(--topbar-text);
+  --color-topbar-hover: var(--topbar-hover);
+  --color-nav-active-bg: var(--nav-active-bg);
+  --color-nav-active-text: var(--nav-active-text);
+}
+
+#about,
+#services,
+#data-center,
+#insights,
+#contact {
+  scroll-margin-top: var(--sticky-offset);
+}
+
+.nav-pill {
+  transition:
+    left 250ms ease,
+    width 250ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-pill {
+    transition: none;
+  }
+}
+
+/*
+ * Client-logos marquee (ClientLogos.tsx). The track holds the real logo
+ * list once, then an identical copy right after it; animating from
+ * -50% to 0% slides the whole track rightward by exactly one list's
+ * width, so logos visibly travel left-to-right, and the loop point is
+ * invisible because the duplicate is already in the exact spot the
+ * original started in. Reduced motion removes the duplicate and the
+ * animation, and wraps the real list into a normal static row instead.
+ */
+.logos-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.logos-track {
+  display: flex;
+  width: max-content;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logos-track {
+    animation: logos-scroll 35s linear infinite;
+  }
+
+  .logos-marquee:hover .logos-track,
+  .logos-marquee:focus-within .logos-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logos-mask {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .logos-track {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .logos-dup {
+    display: none;
+  }
+}
+
+@keyframes logos-scroll {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+/*
+ * Services blueprint (ServicesBlueprint.tsx), colors copied from
+ * docs/design/services-blueprint/services-blueprint-{light,dark}.html.
+ * Only the tokens below differ between themes -- the rack/bubble's own
+ * colors (navy body #092B50, white/pale lines, the #55A4E0 accent, the
+ * #1268A9 selected-unit fill) are the same in both modes by design, so
+ * they stay literal hex in the component, same "fixed in both modes"
+ * exception ServerRack.tsx documents for its own rack illustration.
+ */
+:root {
+  --blueprint-measure: #3a6290;
+  --blueprint-leader: #0954a6;
+  --blueprint-ink: #103d70;
+  --blueprint-number: #0954a6;
+  --blueprint-muted: #1c4570;
+  --blueprint-divider: #7ea1c8;
+  --blueprint-selected-bg: #e4f0fa;
+  --blueprint-selected-bar: #0954a6;
+}
+
+.dark {
+  --blueprint-measure: #bcd2e4;
+  --blueprint-leader: #55a4e0;
+  --blueprint-ink: #f1f8ff;
+  --blueprint-number: #78d0fa;
+  --blueprint-muted: #bcd2e4;
+  --blueprint-divider: #365873;
+  --blueprint-selected-bg: rgba(85, 189, 240, 0.16);
+  --blueprint-selected-bar: #55bdf0;
+}
+
+@theme inline {
+  --color-blueprint-measure: var(--blueprint-measure);
+  --color-blueprint-leader: var(--blueprint-leader);
+  --color-blueprint-ink: var(--blueprint-ink);
+  --color-blueprint-number: var(--blueprint-number);
+  --color-blueprint-muted: var(--blueprint-muted);
+  --color-blueprint-divider: var(--blueprint-divider);
+  --color-blueprint-selected-bg: var(--blueprint-selected-bg);
+  --color-blueprint-selected-bar: var(--blueprint-selected-bar);
+}
+
+/*
+ * Same reduced-motion pattern as the hero motion above: the animation
+ * only exists inside `no-preference`, so with reduced motion requested
+ * these elements simply render in their final state -- no fade, no
+ * moving dashes, and (handled in ServicesBlueprint.tsx itself) no
+ * auto-tour.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .blueprint-unit {
+    transition: fill 0.35s ease;
+  }
+
+  .blueprint-fade {
+    animation: blueprint-fade 0.4s ease-out both;
+  }
+
+  .blueprint-packet {
+    animation: blueprint-packet 2s linear infinite;
+  }
+}
+
+@keyframes blueprint-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes blueprint-packet {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@theme inline {
+  --color-hero-sky: var(--hero-sky);
+  --color-hero-night: var(--hero-night);
+}
+
+/*
+ * Hero motion (docs/figma-hero-notes.md "Motion & interaction notes").
+ * Load-in, cloud drift and star twinkle are pure CSS, wrapped in
+ * `prefers-reduced-motion: no-preference` so that with reduced motion
+ * requested, elements simply keep their base (final, static) state --
+ * no animation ever starts, rather than starting and being paused.
+ * Mouse parallax is JS (HeroParallax.tsx) and checks the same media
+ * query itself before attaching any listener.
+ */
+.hero-fade-slide-up {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-fade-slide-up {
+    animation: hero-fade-slide-up 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--hero-delay, 0ms);
+    opacity: 0;
+  }
+
+  .hero-cloud-track {
+    animation: hero-cloud-drift var(--hero-drift-duration, 90s) linear infinite;
+  }
+
+  .hero-star {
+    animation: hero-star-twinkle var(--hero-twinkle-duration, 4s) ease-in-out infinite;
+    animation-delay: var(--hero-delay, 0ms);
+  }
+}
+
+@keyframes hero-fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-cloud-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes hero-star-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/*
+ * Server rack micro-animations (hero illustration). Same pattern as the
+ * hero motion above: absent entirely under reduced motion (not just
+ * paused), and transform/opacity only. [data-rack-paused] is set by
+ * RackMotionController.tsx (IntersectionObserver + visibilitychange),
+ * so a loop the user can't see never costs a repaint.
+ */
+.rack-traffic,
+.rack-replicate {
+  opacity: 0;
+}
+
+.rack-slide-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rack-blink {
+    animation: rack-blink var(--rack-blink-duration, 2.4s) ease-in-out infinite;
+    animation-delay: var(--rack-blink-delay, 0s);
+  }
+
+  .rack-traffic {
+    animation: rack-traffic 2s linear infinite;
+    animation-delay: var(--rack-traffic-delay, 0s);
+  }
+
+  .rack-replicate {
+    animation: rack-replicate 2.5s ease-in-out infinite;
+    animation-delay: var(--rack-replicate-delay, 0s);
+  }
+
+  .rack-slide-in {
+    animation: rack-slide-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--rack-slide-delay, 0s);
+    opacity: 0;
+  }
+
+  [data-rack-paused='true'] .rack-blink,
+  [data-rack-paused='true'] .rack-traffic,
+  [data-rack-paused='true'] .rack-replicate {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes rack-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes rack-traffic {
+  from {
+    opacity: 0;
+    transform: translateX(-150%);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(350%);
+  }
+}
+
+@keyframes rack-replicate {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+}
+
+@keyframes rack-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Hover-only on real pointers, so a tap on a touchscreen never leaves a tooltip stuck open. */
+@media (hover: hover) and (pointer: fine) {
+  .rack-unit:hover {
+    border-color: #2ea3db;
+  }
+
+  .rack-unit:hover .rack-tooltip {
+    opacity: 1;
+  }
+}
+
+/*
+ * Shared "content page" tokens -- originally built for /about-us, now
+ * also backing /services (docs/design/services/): both reference the
+ * exact same text/card/selected-state colors, so these live under a
+ * page-neutral name instead of being redefined per page. Background
+ * colors are pixel-identical to 4 of the homepage's existing section-*
+ * tokens (trust/about/services/dc), reused directly -- see each
+ * component's own comment for which one it borrows. Text colors are
+ * close to but not the same as the sitewide --lp-head/muted/subtle
+ * tokens, so they get their own names here instead of overwriting those
+ * shared ones.
+ */
+:root {
+  --content-head: #103d70;
+  --content-body: #1c4570;
+  --content-secondary: #3a6290;
+  --content-label: #4c7098;
+  --content-accent: #0954a6;
+  --content-card-bg: #ffffff;
+  --content-card-border: #c6dded;
+  --content-selected-bg: #0954a6;
+  --content-selected-text: #ffffff;
+  --content-panel-bg: #ffffff;
+  --content-icon-chip-bg: #e4f0fa;
+}
+
+.dark {
+  --content-head: #f1f8ff;
+  --content-body: #bcd2e4;
+  --content-secondary: #bcd2e4;
+  --content-label: #91acc3;
+  --content-accent: #55bdf0;
+  --content-card-bg: #294c6c;
+  --content-card-border: #365873;
+  --content-selected-bg: #35a9e0;
+  --content-selected-text: #0e2236;
+  --content-panel-bg: #1b3652;
+  --content-icon-chip-bg: #294c6c;
+}
+
+@theme inline {
+  --color-content-head: var(--content-head);
+  --color-content-body: var(--content-body);
+  --color-content-secondary: var(--content-secondary);
+  --color-content-label: var(--content-label);
+  --color-content-accent: var(--content-accent);
+  --color-content-card-bg: var(--content-card-bg);
+  --color-content-card-border: var(--content-card-border);
+  --color-content-selected-bg: var(--content-selected-bg);
+  --color-content-selected-text: var(--content-selected-text);
+  --color-content-panel-bg: var(--content-panel-bg);
+  --color-content-icon-chip-bg: var(--content-icon-chip-bg);
+}
+
+/* /about-us-only tokens (docs/design/about-us/): the visitor pass and
+   photo collage don't appear anywhere else, so these stay page-specific
+   rather than joining the shared --content-* set above. */
+:root {
+  --about-collage-border: #ffffff;
+  --about-visit-bg: #0954a6;
+  --about-visit-cta-bg: #ffffff;
+  --about-visit-cta-text: #0954a6;
+  --about-ph1: #d1e1ef;
+  --about-ph2: #bcd5ec;
+}
+
+.dark {
+  --about-collage-border: #dce9f5;
+  --about-visit-bg: #1b3652;
+  --about-visit-cta-bg: #35a9e0;
+  --about-visit-cta-text: #0e2236;
+  --about-ph1: #1b3652;
+  --about-ph2: #203f60;
+}
+
+@theme inline {
+  --color-about-collage-border: var(--about-collage-border);
+  --color-about-visit-bg: var(--about-visit-bg);
+  --color-about-visit-cta-bg: var(--about-visit-cta-bg);
+  --color-about-visit-cta-text: var(--about-visit-cta-text);
+}
+
+/* /services-only tokens (docs/design/services/). Everything else on
+   that page (cards, text, selected pills/tabs, badges) uses the shared
+   --content-* tokens above; these two bands and the estimator slider
+   track are the only colors on the page that don't match an existing
+   token. */
+:root {
+  --services-step3-bg: #bcd5ec;
+  --services-covers-bg: #103d70;
+  --services-slider-track: #d1e1ef;
+}
+
+.dark {
+  --services-step3-bg: #1b3652;
+  --services-covers-bg: #0954a6;
+  --services-slider-track: #365873;
+}
+
+@theme inline {
+  --color-services-step3-bg: var(--services-step3-bg);
+  --color-services-covers-bg: var(--services-covers-bg);
+  --color-services-slider-track: var(--services-slider-track);
+}
+
+/* /insights-only tokens (docs/design/insights/): the pinned-notice bar's
+   amber palette. Everything else on the page (cards, text, selected
+   filter row, timeline, email field, subscribe button) reuses the
+   shared --content-* tokens and the homepage's own --section-insights,
+   --section-about, --section-trust and --section-contact tokens -- see
+   each component's own comment for which one it borrows. */
+:root {
+  --insights-pinned-bg: #fff4d6;
+  --insights-pinned-border: #f1d48a;
+  --insights-pinned-badge-bg: #7a5200;
+  --insights-pinned-badge-text: #ffffff;
+  --insights-pinned-text: #4a3200;
+  --insights-pinned-text-secondary: #7a5200;
+}
+
+.dark {
+  --insights-pinned-bg: #2e2a14;
+  --insights-pinned-border: #6b5520;
+  --insights-pinned-badge-bg: #f5d98a;
+  --insights-pinned-badge-text: #2e2a14;
+  --insights-pinned-text: #fbe7b0;
+  --insights-pinned-text-secondary: #e8c877;
+}
+
+@theme inline {
+  --color-insights-pinned-bg: var(--insights-pinned-bg);
+  --color-insights-pinned-border: var(--insights-pinned-border);
+  --color-insights-pinned-badge-bg: var(--insights-pinned-badge-bg);
+  --color-insights-pinned-badge-text: var(--insights-pinned-badge-text);
+  --color-insights-pinned-text: var(--insights-pinned-text);
+  --color-insights-pinned-text-secondary: var(--insights-pinned-text-secondary);
+}
+
+/* /contact-us-only tokens (docs/design/contact-us/). Everything else on
+   that page (cards, pills, step-01 circle, text) reuses the shared
+   --content-* tokens and the homepage's own --section-insights-card --
+   see each component's own comment for which one it borrows. Only the
+   form inputs' own background, the steps 02-03 circle border, and the
+   "something is down" red card don't match an existing token. */
+:root {
+  --contact-input-bg: #ffffff;
+  --contact-step-border: #9dbedd;
+  --contact-down-bg: #fff4f2;
+  --contact-down-border: #f2c4bc;
+  --contact-down-text: #9e2a17;
+  --contact-down-icon-bg: #fbe1dc;
+}
+
+.dark {
+  --contact-input-bg: #142b45;
+  --contact-step-border: #365873;
+  --contact-down-bg: #3a1d1a;
+  --contact-down-border: #7a3a30;
+  --contact-down-text: #ffb4a6;
+  --contact-down-icon-bg: #5a2a22;
+}
+
+@theme inline {
+  --color-contact-input-bg: var(--contact-input-bg);
+  --color-contact-step-border: var(--contact-step-border);
+  --color-contact-down-bg: var(--contact-down-bg);
+  --color-contact-down-border: var(--contact-down-border);
+  --color-contact-down-text: var(--contact-down-text);
+  --color-contact-down-icon-bg: var(--contact-down-icon-bg);
+}
+
+/* Striped placeholder box (team/founder/collage photos) -- the intro
+   slider reuses AboutImageSlider.tsx's own solid-fill placeholder style
+   instead, unchanged, per "do not duplicate it". */
+.about-placeholder {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--about-ph1) 0 14px,
+    var(--about-ph2) 14px 28px
+  );
+}
+
+/* Edge fade for the Teams marquee (TeamsCarousel.tsx) -- same gradient
+   idea as .logos-mask, kept separate rather than shared so toggling one
+   marquee's reduced-motion behavior can never accidentally affect the
+   other's. */
+.teams-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}

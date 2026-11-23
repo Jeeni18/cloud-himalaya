@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud Himalaya Theme Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Frame: one neutral world around two themed site previews. Layout: toolbar, then a stage of one or two scaled 1280px site panes. */
+      :root {
+        --frame: #cfdce8;
+        --frame-ink: #103d70;
+        --frame-line: #b3c7d9;
+        --display: 'Geist', ui-sans-serif, system-ui, sans-serif;
+        --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        background: var(--frame);
+        font-family: var(--display);
+        color: var(--frame-ink);
+      }
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        background: #e3ecf4;
+        border-bottom: 1px solid var(--frame-line);
+      }
+      .toolbar strong {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .toolbar span.note {
+        font-size: 13px;
+        color: #426a8c;
+      }
+      .seg {
+        display: inline-flex;
+        border: 1px solid var(--frame-line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .seg button {
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        border: 0;
+        background: transparent;
+        color: var(--frame-ink);
+        padding: 8px 14px;
+        cursor: pointer;
+        min-height: 36px;
+      }
+      .seg button[aria-pressed='true'] {
+        background: #103d70;
+        color: #fff;
+      }
+      .seg button:focus-visible {
+        outline: 2px solid #1268b3;
+        outline-offset: -2px;
+      }
+      .stage {
+        display: grid;
+        gap: 16px;
+        padding: 16px;
+      }
+      .stage.side {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+      .pane {
+        min-width: 0;
+      }
+      .pane-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: #426a8c;
+        margin: 0 4px 8px;
+      }
+      .pane-box {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(16, 61, 112, 0.18);
+        background: #fff;
+      }
+      .stage.side .site {
+        width: 1280px;
+      }
+      .stage.single .site {
+        width: 100%;
+      }
+      @media (max-width: 900px) {
+        .stage.side {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .site {
+        --bg: #ffffff;
+        --alt: #f4f8fc;
+        --surface: #ffffff;
+        --line: #e3eaf3;
+        --line2: #c4d4e6;
+        --head: #0b1f3a;
+        --text: #1a2b44;
+        --muted: #3a4d66;
+        --sub: #4a5d75;
+        --p: #0954a6;
+        --onp: #ffffff;
+        --acc: #0954a6;
+        --soft: #e6f2fb;
+        --soft2: #cfe4f5;
+        --band: #0b1f3a;
+        --bandS: #0f2747;
+        --bandL: #24456f;
+        --bandT: #ffffff;
+        --bandM: #c4d3e6;
+        --bandA: #7cc7ee;
+        --led: #1e9e5a;
+        --rack: #0b1f3a;
+        --rackU: #0e2546;
+        --rackL: #1d3a63;
+        --sky: #eaf3fb;
+        --r1: #d3e3f3;
+        --r2: #bcd4ec;
+        --r3: #a6c5e5;
+        --warnbg: #fdecea;
+        --warn: #b3261e;
+        --logo: none;
+        --foot: #063a75;
+        --footT: #dcebfa;
+        --footL: #1e5596;
+        --shadow: 0 24px 60px rgba(9, 84, 166, 0.14);
+      }
+      .site.dark {
+        --bg: #050f1f;
+        --alt: #081830;
+        --surface: #0a1e3b;
+        --line: #1d3a63;
+        --line2: #2a4a75;
+        --head: #ffffff;
+        --text: #d5e2f2;
+        --muted: #b4c6dd;
+        --sub: #8ea6c4;
+        --p: #29a3dc;
+        --onp: #04121f;
+        --acc: #5cc2f0;
+        --soft: #0f2a4d;
+        --soft2: #13305a;
+        --band: #081830;
+        --bandS: #0a1e3b;
+        --bandL: #1d3a63;
+        --bandT: #ffffff;
+        --bandM: #b4c6dd;
+        --bandA: #5cc2f0;
+        --led: #3dd68c;
+        --rack: #020a16;
+        --rackU: #0e2546;
+        --rackL: #1d3a63;
+        --sky: #060f1f;
+        --r1: #0d2240;
+        --r2: #0a1b33;
+        --r3: #07142a;
+        --warnbg: #3a1714;
+        --warn: #ff8a80;
+        --foot: #030b17;
+        --footT: #b4c6dd;
+        --footL: #13284a;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      }
+      .site {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Geist, sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      .site .w {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 40px;
+      }
+      .site .mono {
+        font-family: 'Geist Mono', monospace;
+      }
+      .site .eye {
+        font-family: 'Geist Mono', monospace;
+        font-size: 13px;
+        color: var(--acc);
+        letter-spacing: 0.02em;
+      }
+      .site h2 {
+        margin: 12px 0 0;
+        font-weight: 600;
+        font-size: 42px;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--head);
+      }
+      .site h3 {
+        margin: 0;
+        font-weight: 600;
+        color: var(--head);
+      }
+      .site .sec {
+        padding: 112px 0;
+      }
+      .site .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+      }
+      .site .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 15px 24px;
+        border-radius: 10px;
+      }
+      .site .bp {
+        background: var(--p);
+        color: var(--onp);
+      }
+      .site .bs {
+        background: var(--surface);
+        border: 1px solid var(--line2);
+        color: var(--head);
+      }
+      .site .lnk {
+        color: var(--acc);
+        font-weight: 600;
+      }
+      .site .row {
+        display: flex;
+        gap: 24px;
+      }
+      .site .hd {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 40px;
+        margin-bottom: 44px;
+      }
+      .site .hd p {
+        margin: 0;
+        max-width: 440px;
+        color: var(--muted);
+      }
+      .site {
+        --bg: #eef7fc;
+        --alt: #ddf0fa;
+        --surface: #ffffff;
+        --line: #c8e3f3;
+        --line2: #9ccbea;
+        --head: #0b3b73;
+        --text: #1c4570;
+        --muted: #3a6290;
+        --sub: #4c7098;
+        --p: #0954a6;
+        --onp: #ffffff;
+        --acc: #0954a6;
+        --soft: #d4edfa;
+        --soft2: #b9e1f6;
+        --band: #0954a6;
+        --bandS: #0b60b8;
+        --bandL: #4a8fd2;
+        --bandT: #ffffff;
+        --bandM: #d4edfa;
+        --bandA: #9fdbf6;
+        --led: #1e9e5a;
+        --rack: #0b2f5c;
+        --rackU: #0e3a6e;
+        --rackL: #1f5a99;
+        --sky: #dceffa;
+        --r1: #bce2f6;
+        --r2: #8dcbec;
+        --r3: #5ab3e3;
+        --foot: #0b3b73;
+        --footT: #d4edfa;
+        --footL: #2f6fb0;
+        --shadow: 0 24px 60px rgba(9, 84, 166, 0.16);
+      }
+      .site.dark {
+        --bg: #0a2e57;
+        --alt: #0c3666;
+        --surface: #0f417a;
+        --line: #1f5a99;
+        --line2: #2f6fb0;
+        --head: #ffffff;
+        --text: #e3f2fb;
+        --muted: #b9dcf2;
+        --sub: #93c6e8;
+        --p: #29a3dc;
+        --onp: #04223f;
+        --acc: #6cc6ee;
+        --soft: #134c8c;
+        --soft2: #1a5a9e;
+        --band: #0954a6;
+        --bandS: #0b60b8;
+        --bandL: #4a8fd2;
+        --bandT: #ffffff;
+        --bandM: #d4edfa;
+        --bandA: #9fdbf6;
+        --led: #3dd68c;
+        --rack: #061e3d;
+        --rackU: #0b2f5c;
+        --rackL: #1f5a99;
+        --sky: #0a2e57;
+        --r1: #155196;
+        --r2: #0f417a;
+        --r3: #0c3666;
+        --foot: #072447;
+        --footT: #b9dcf2;
+        --footL: #1f5a99;
+        --shadow: 0 24px 60px rgba(2, 16, 36, 0.45);
+      }
+      .site .more {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+      }
+      .site .more b {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        color: var(--head);
+        border: 1px solid var(--line2);
+        background: var(--surface);
+        border-radius: 999px;
+        padding: 11px 20px;
+      }
+      .site .more i {
+        white-space: nowrap;
+        font-style: normal;
+        font-family: 'Geist Mono', monospace;
+        font-size: 11px;
+        color: var(--sub);
+      }
+      .site .band .more b {
+        background: transparent;
+        color: var(--bandT);
+        border-color: var(--bandL);
+      }
+      .site .band .more i {
+        color: var(--bandM);
+      }
+
+      .site .ridge {
+        display: block;
+        width: 100%;
+        height: 56px;
+        margin-bottom: -1px;
+      }
+      .site.dark .ridge {
+        display: none;
+      }
+      .site .toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--head);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .site a {
+        text-decoration: none;
+      }
+      .site .btn:focus-visible,
+      .site a:focus-visible,
+      .site button:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .site * {
+          animation: none !important;
+        }
+      }
+      @media (max-width: 1100px) {
+        .stage.single .site .w {
+          padding: 0 20px;
+        }
+        .stage.single .site nav {
+          display: none !important;
+        }
+        .stage.single .site .z-hero .w,
+        .stage.single .site .z-about .w > div,
+        .stage.single .site .z-careers .w > div {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+  NOTE (added when this preview was saved into docs/design/ on 2026-11-21):
+  This is a static mockup used only as a visual/content reference for the real
+  Next.js homepage. It is not built or imported by the app. Section ids
+  (z-hero, z-about, z-services, z-dc, z-insights, z-careers, z-contact) and
+  the exact copy/colours/spacing below are what the real components should
+  match -- see the request this file accompanied for the full build plan.
+-->
+    <div class="toolbar">
+      <div>
+        <strong>Cloud Himalaya theme preview</strong>
+        <span class="note">Design exploration with the exact light and dark palettes</span>
+      </div>
+    </div>
+    <main class="stage side" id="stage">
+      <div class="pane" id="paneA">
+        <div class="pane-box"><div class="site" id="siteA"></div></div>
+      </div>
+      <div class="pane" id="paneB">
+        <div class="pane-box"><div class="site dark" id="siteB"></div></div>
+      </div>
+    </main>
+
+    <template id="site-tpl"
+      ><div class="z z-hero">
+        <section style="position: relative; overflow: hidden">
+          <svg
+            viewBox="0 0 1440 860"
+            preserveAspectRatio="xMidYMax slice"
+            style="position: absolute; inset: 0; width: 100%; height: 100%"
+            aria-hidden="true"
+          >
+            <rect width="1440" height="860" style="fill: var(--sky)" />
+            <path
+              d="M0 860 L0 560 L150 500 L260 540 L420 400 L540 490 L680 430 L840 320 L960 440 L1080 380 L1220 470 L1340 390 L1440 440 L1440 860 Z"
+              style="fill: var(--r1)"
+            />
+            <path
+              d="M0 860 L0 650 L180 610 L340 660 L520 590 L700 650 L880 580 L1060 645 L1240 605 L1440 650 L1440 860 Z"
+              style="fill: var(--r2)"
+            />
+            <path
+              d="M0 860 L0 770 L240 740 L480 780 L760 745 L1040 785 L1280 750 L1440 770 L1440 860 Z"
+              style="fill: var(--r3)"
+            />
+          </svg>
+          <header
+            style="
+              position: relative;
+              z-index: 2;
+              background: color-mix(in srgb, var(--bg) 88%, transparent);
+              border-bottom: 1px solid var(--line);
+            "
+          >
+            <div
+              class="w"
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 72px;
+                font-size: 15px;
+              "
+            >
+              <a
+                href="#top"
+                aria-label="Cloud Himalaya home"
+                style="width: 230px; height: 30px; display: block"
+                >CLOUD HIMALAYA</a
+              >
+              <nav aria-label="Main" style="display: flex; gap: 36px; font-weight: 500">
+                <a href="#top" style="color: var(--muted)">About Us</a
+                ><a href="#top" style="color: var(--muted)">Services</a
+                ><a href="#top" style="color: var(--muted)">Insights</a
+                ><a href="#top" style="color: var(--muted)">Careers</a
+                ><a href="#top" style="color: var(--muted)">Contact Us</a>
+              </nav>
+              <div style="display: flex; gap: 18px; align-items: center">
+                <a href="#top" style="color: var(--muted); font-weight: 500">Client Login ↗</a
+                ><a href="#top" class="btn bp" style="padding: 11px 18px; font-size: 15px"
+                  >Get a quote</a
+                >
+                <button type="button" class="toggle" aria-label="Switch theme"></button>
+              </div>
+            </div>
+          </header>
+        </section>
+      </div>
+      <div class="z z-trust">
+        <section style="border-bottom: 1px solid var(--line)">
+          <div class="w" style="padding: 40px 40px; display: flex; gap: 32px; align-items: center">
+            <div style="flex: 0 0 220px">
+              <div style="font-weight: 600; font-size: 18px; color: var(--head)">
+                Trusted by 500+ businesses
+              </div>
+              <div style="font-size: 14px; color: var(--sub)">
+                banks · fintech · media · schools · software
+              </div>
+            </div>
+            <div
+              class="mono"
+              style="
+                flex: 1;
+                height: 64px;
+                border: 1px dashed var(--line2);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                color: var(--sub);
+              "
+            >
+              CLIENT LOGO
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-about">
+        <section class="sec">
+          <div class="w">
+            <div class="hd">
+              <div>
+                <div class="eye">ABOUT US</div>
+                <h2>A team of system and network engineers, based in Nepal</h2>
+              </div>
+              <span class="more"><b>More →</b><i>cloudhimalaya.com/about-us</i></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-services">
+        <section class="sec" style="background: var(--alt)">
+          <div class="w">
+            <div class="hd">
+              <div>
+                <div class="eye">SERVICES</div>
+                <h2>Infrastructure for every stage of your business</h2>
+              </div>
+              <span class="more"><b>More →</b><i>cloudhimalaya.com/services</i></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-dc">
+        <section class="sec band" style="background: var(--band)">
+          <div class="w">
+            <div class="hd">
+              <div>
+                <div class="eye" style="color: var(--bandA)">OUR DATA CENTER</div>
+                <h2 style="color: var(--bandT)">Built in Kathmandu. Built to stay online.</h2>
+              </div>
+              <span class="more"><b>More →</b><i>cloudhimalaya.com/services/data-center</i></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-insights">
+        <section class="sec">
+          <div class="w">
+            <div class="hd">
+              <div>
+                <div class="eye">INSIGHTS</div>
+                <h2>News, guides and notices</h2>
+              </div>
+              <span class="more"><b>More →</b><i>cloudhimalaya.com/insights</i></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-careers">
+        <section class="sec" style="background: var(--alt)">
+          <div class="w">
+            <div class="hd">
+              <div>
+                <div class="eye">CAREERS</div>
+                <h2>Build Nepal's cloud with us</h2>
+              </div>
+              <span class="more"><b>More →</b><i>cloudhimalaya.com/careers</i></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-contact">
+        <section class="sec">
+          <div class="w">
+            <div class="hd">
+              <div>
+                <div class="eye">CONTACT US</div>
+                <h2>Tell us what you run</h2>
+              </div>
+              <span class="more"><b>More →</b><i>cloudhimalaya.com/contact-us</i></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="z z-footer">
+        <footer style="background: var(--foot); color: var(--footT); font-size: 15px">
+          <div class="w" style="padding-top: 64px; padding-bottom: 28px">Footer</div>
+        </footer>
+      </div>
+    </template>
+  </body>
+</html>

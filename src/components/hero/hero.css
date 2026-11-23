@@ -1,0 +1,121 @@
+/*
+ * Hero scenery: ridgelines (static) + drifting clouds (animated).
+ * Scoped to this feature rather than the global stylesheet, since
+ * nothing outside the hero uses these tokens or classes.
+ *
+ * Colors are provisional (CLAUDE.md section 7). Farther layers are
+ * lower-contrast against their own sky -- in light mode that means
+ * paler/lighter, in dark mode the relationship flips (a literal "same
+ * pale color" would be invisible against a near-black sky), so light
+ * and dark are tuned independently rather than sharing one scale.
+ */
+:root {
+  --chw-ridge-far: #c3d1e8;
+  --chw-ridge-far-edge: #a8b9d6;
+  --chw-ridge-mid: #6a80ac;
+  --chw-ridge-mid-edge: #52678e;
+  --chw-ridge-near: #28406b;
+  --chw-ridge-near-edge: #1c2e4f;
+  --chw-cloud-highlight: #ffffff;
+  --chw-cloud-shadow: #c9d6ec;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chw-ridge-far: #1c2740;
+    --chw-ridge-far-edge: #263252;
+    --chw-ridge-mid: #2e4066;
+    --chw-ridge-mid-edge: #3c527f;
+    --chw-ridge-near: #44608c;
+    --chw-ridge-near-edge: #5578a8;
+    --chw-cloud-highlight: #b9c7e8;
+    --chw-cloud-shadow: #6e7fac;
+  }
+}
+
+:root[data-theme='light'] {
+  --chw-ridge-far: #c3d1e8;
+  --chw-ridge-far-edge: #a8b9d6;
+  --chw-ridge-mid: #6a80ac;
+  --chw-ridge-mid-edge: #52678e;
+  --chw-ridge-near: #28406b;
+  --chw-ridge-near-edge: #1c2e4f;
+  --chw-cloud-highlight: #ffffff;
+  --chw-cloud-shadow: #c9d6ec;
+}
+
+:root[data-theme='dark'] {
+  --chw-ridge-far: #1c2740;
+  --chw-ridge-far-edge: #263252;
+  --chw-ridge-mid: #2e4066;
+  --chw-ridge-mid-edge: #3c527f;
+  --chw-ridge-near: #44608c;
+  --chw-ridge-near-edge: #5578a8;
+  --chw-cloud-highlight: #b9c7e8;
+  --chw-cloud-shadow: #6e7fac;
+}
+
+.ridgeline-far,
+.ridgeline-mid,
+.ridgeline-near {
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ridgeline-far {
+  fill: var(--chw-ridge-far);
+  stroke: var(--chw-ridge-far-edge);
+}
+
+.ridgeline-mid {
+  fill: var(--chw-ridge-mid);
+  stroke: var(--chw-ridge-mid-edge);
+}
+
+.ridgeline-near {
+  fill: var(--chw-ridge-near);
+  stroke: var(--chw-ridge-near-edge);
+}
+
+/* Clouds drift from fully off-screen left to fully off-screen right and
+ * loop -- the reset is invisible because it happens outside the visible
+ * viewBox. Nearer layer (.cloud-near) is larger (set via width/height in
+ * Clouds.tsx) and animates faster, giving the parallax effect. */
+.cloud {
+  animation-name: cloud-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.cloud-far {
+  animation-duration: 140s;
+}
+
+.cloud-near {
+  animation-duration: 85s;
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-280px);
+  }
+  to {
+    transform: translateX(1760px);
+  }
+}
+
+/* Set by HeroMotionController.tsx when the hero is off-screen or the
+ * tab is hidden -- see that file for why this needs JavaScript. */
+[data-motion-paused='true'] .cloud {
+  animation-play-state: paused;
+}
+
+/* Static version for reduced motion. Pure CSS, applies at first paint,
+ * so there's never a flash of motion before JavaScript runs. */
+@media (prefers-reduced-motion: reduce) {
+  .cloud {
+    animation: none;
+    transform: none;
+  }
+}

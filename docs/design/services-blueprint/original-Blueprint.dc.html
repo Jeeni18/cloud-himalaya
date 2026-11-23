@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Infra 2 – The server architecture blueprint</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button:focus-visible,a:focus-visible{outline:2px solid #55A4E0;outline-offset:3px}
+.u{transition:fill .35s ease}
+.fade{animation:fade .4s ease-out both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.pk{animation:pk 2s linear infinite}
+@keyframes pk{to{stroke-dashoffset:-24}}
+@media (prefers-reduced-motion: reduce){.u{transition:none}.fade,.pk{animation:none}}
+</style>
+</helmet>
+<div style="font-family: 'Geist', sans-serif; color: #FFFFFF; background-color: #092B50; background-image: linear-gradient(rgba(216,234,248,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(216,234,248,0.08) 1px, transparent 1px), linear-gradient(rgba(216,234,248,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(216,234,248,0.035) 1px, transparent 1px); background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px; min-height: 980px">
+
+<header style="max-width: 1240px; margin: 0 auto; padding: 20px 32px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; border-bottom: 1px solid #55A4E0">
+<span style="font-weight: 600; font-size: 16px; letter-spacing: 0.04em">CLOUD HIMALAYA</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #D8EAF8">DWG CH-100 · CABINET ELEVATION · DETAIL {{cur.n}}</span>
+<a href="#contact" style="color: #092B50; background: #D8EAF8; padding: 8px 14px; text-decoration: none; font-weight: 500; font-size: 14px">Contact</a>
+</header>
+
+<section style="max-width: 1240px; margin: 0 auto; padding: 24px 32px 0">
+<h1 style="margin: 0; font-weight: 300; font-size: 56px; line-height: 1.04; letter-spacing: -0.03em">The technology behind <span style="font-weight: 600">everything that runs.</span></h1>
+</section>
+
+<section style="max-width: 1240px; margin: 0 auto; padding: 18px 32px 36px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+<svg role="img" aria-label="Blueprint of a server cabinet. The selected service's units are highlighted and a magnified detail circle shows how that service works." viewBox="0 0 760 720" style="flex: 999 1 620px; min-width: 0; max-width: 780px; height: auto">
+<g stroke="#D8EAF8" stroke-width="1" fill="none">
+<path d="M110 30 H330 M110 24 V36 M330 24 V36"></path><path d="M80 60 V680 M74 60 H86 M74 680 H86"></path>
+</g>
+<text x="220" y="20" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#D8EAF8">600</text>
+<text x="66" y="370" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#D8EAF8" transform="rotate(-90 66 370)">42U</text>
+<rect x="110" y="60" width="220" height="620" fill="none" stroke="#FFFFFF" stroke-width="2"></rect>
+<rect x="120" y="70" width="200" height="600" fill="none" stroke="#55A4E0" stroke-width="0.8"></rect>
+<sc-for list="{{units}}" as="u" hint-placeholder-count="14">
+<g>
+<rect class="u" x="124" y="{{u.y}}" width="192" height="{{u.h}}" fill="{{u.fill}}" stroke="#D8EAF8" stroke-width="0.8" stroke-dasharray="{{u.dash}}"></rect>
+<line x1="134" y1="{{u.ly}}" x2="200" y2="{{u.ly}}" stroke="#55A4E0" stroke-width="1"></line>
+<text x="310" y="{{u.ty}}" text-anchor="end" font-family="Geist Mono, monospace" font-size="9" fill="#D8EAF8">{{u.label}}</text>
+</g>
+</sc-for>
+<path d="{{leader}}" fill="none" stroke="#55A4E0" stroke-width="1.2"></path>
+<path class="pk" d="{{leader}}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3 21"></path>
+
+<g class="fade" transform="translate(560 330)">
+<circle r="170" fill="#092B50" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle r="162" fill="none" stroke="#55A4E0" stroke-width="0.8" stroke-dasharray="3 5"></circle>
+<sc-if value="{{d.vps}}" hint-placeholder-val="{{ false }}"><g><rect x="-110" y="-80" width="220" height="160" fill="none" stroke="#FFFFFF" stroke-width="1.5"></rect><text x="-110" y="-88" font-family="Geist Mono, monospace" font-size="10" fill="#D8EAF8">HOST · 2U</text><sc-for list="{{vmBoxes}}" as="v" hint-placeholder-count="4"><g><rect x="{{v.x}}" y="-62" width="94" height="58" fill="none" stroke="#55A4E0" stroke-width="1.2" stroke-dasharray="5 3"></rect><text x="{{v.tx}}" y="-46" font-family="Geist Mono, monospace" font-size="9" fill="#55A4E0">{{v.s}}</text><rect x="{{v.bx}}" y="-38" width="70" height="5" fill="#55A4E0"></rect><rect x="{{v.bx}}" y="-28" width="48" height="5" fill="#1268A9"></rect></g></sc-for><sc-for list="{{vmBoxes2}}" as="v" hint-placeholder-count="2"><g><rect x="{{v.x}}" y="6" width="94" height="58" fill="none" stroke="#55A4E0" stroke-width="1.2" stroke-dasharray="5 3"></rect><text x="{{v.tx}}" y="22" font-family="Geist Mono, monospace" font-size="9" fill="#55A4E0">{{v.s}}</text><rect x="{{v.bx}}" y="30" width="70" height="5" fill="#55A4E0"></rect></g></sc-for></g></sc-if>
+<sc-if value="{{d.colo}}" hint-placeholder-val="{{ false }}"><g><rect x="-100" y="-90" width="200" height="180" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="6 4"></rect><sc-for list="{{coloRacks}}" as="r" hint-placeholder-count="3"><g><rect x="{{r.x}}" y="-70" width="44" height="130" fill="none" stroke="#D8EAF8" stroke-width="1.2"></rect><path d="{{r.u}}" stroke="#55A4E0" stroke-width="1"></path></g></sc-for><rect x="70" y="-14" width="22" height="18" fill="none" stroke="#FFFFFF" stroke-width="1.5"></rect><path d="M75 -14 V-20 A6 6 0 0 1 87 -20 V-14" fill="none" stroke="#FFFFFF" stroke-width="1.5"></path><text x="0" y="78" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#D8EAF8">CUSTOMER CAGE · YOUR HARDWARE</text></g></sc-if>
+<sc-if value="{{d.managed}}" hint-placeholder-val="{{ false }}"><g><rect x="-90" y="-60" width="180" height="104" fill="none" stroke="#FFFFFF" stroke-width="1.5"></rect><path d="M-74 22 L-44 -4 L-20 8 L8 -26 L40 -12 L74 -34" fill="none" stroke="#55A4E0" stroke-width="1.6"></path><path d="M-30 44 L-40 70 H40 L30 44" fill="none" stroke="#FFFFFF" stroke-width="1.2"></path><sc-for list="{{probes}}" as="p" hint-placeholder-count="4"><g><line x1="0" y1="0" x2="{{p.x}}" y2="{{p.y}}" stroke="#55A4E0" stroke-width="0.8" stroke-dasharray="2 4"></line><rect x="{{p.rx}}" y="{{p.ry}}" width="12" height="12" fill="none" stroke="#D8EAF8" stroke-width="1"></rect></g></sc-for></g></sc-if>
+<sc-if value="{{d.backup}}" hint-placeholder-val="{{ false }}"><g><g stroke="#FFFFFF" stroke-width="1.3" fill="none"><path d="M-120 40 L-60 60 L0 40 L-60 20 Z"></path><path d="M-120 18 L-60 38 L0 18 L-60 -2 Z"></path><path d="M-120 -4 L-60 16 L0 -4 L-60 -24 Z" fill="#1268A9"></path><path d="M10 40 L70 60 L130 40 L70 20 Z"></path><path d="M10 18 L70 38 L130 18 L70 -2 Z"></path><path d="M10 -4 L70 16 L130 -4 L70 -24 Z" fill="#1268A9"></path></g><path class="pk" d="M-60 -60 H70 M-60 -52 H70" stroke="#55A4E0" stroke-width="1.5" stroke-dasharray="4 8"></path><text x="-60" y="86" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#D8EAF8">ARRAY A</text><text x="70" y="86" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#D8EAF8">ARRAY B</text></g></sc-if>
+<sc-if value="{{d.email}}" hint-placeholder-val="{{ false }}"><g><rect x="-120" y="-24" width="60" height="48" fill="none" stroke="#FFFFFF" stroke-width="1.5"></rect><path d="M-116 -20 L-90 0 L-64 -20" fill="none" stroke="#FFFFFF" stroke-width="1.3"></path><g fill="none" stroke="#55A4E0" stroke-width="1.2"><path d="M-60 0 C 0 -80, 60 -80, 110 -70 M-60 0 C 0 -20, 60 -20, 120 -20 M-60 0 C 0 30, 60 30, 120 30 M-60 0 C 0 80, 60 80, 110 80"></path></g><g fill="#092B50" stroke="#FFFFFF" stroke-width="1.2"><rect x="104" y="-78" width="14" height="14"></rect><rect x="114" y="-27" width="14" height="14"></rect><rect x="114" y="23" width="14" height="14"></rect><rect x="104" y="73" width="14" height="14"></rect></g></g></sc-if>
+<text y="150" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" fill="#FFFFFF">DETAIL {{cur.n}} · {{cur.fig}}</text>
+</g>
+</svg>
+
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 18px">
+<div role="group" aria-label="Services" style="display: flex; flex-direction: column; border-top: 1px solid #55A4E0">
+<sc-for list="{{btns}}" as="b" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{b.pressed}}" onClick="{{b.pick}}" onMouseEnter="{{b.pick}}" onFocus="{{b.pick}}" style="{{b.style}}">
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #55A4E0">{{b.n}}</span>
+<span style="font-weight: 600; font-size: 20px; text-align: left; flex: 1">{{b.name}}</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #D8EAF8">{{b.units}}</span>
+</button>
+</sc-for>
+</div>
+<p class="fade" aria-live="polite" style="margin: 0; font-size: 16px; line-height: 1.6; color: #D8EAF8">{{cur.text}}</p>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":980}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { sel: 0, user: false }; }
+componentDidMount() { let reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {} if (!reduce) this.tour = setInterval(() => { if (this.state.user) { clearInterval(this.tour); return; } this.setState({ sel: (this.state.sel + 1) % 5 }); }, 3400); }
+componentWillUnmount() { clearInterval(this.tour); }
+renderVals() {
+const top = 74, uh = 14.2;
+const U = [[1, 1, 'PATCH', 'net'], [2, 1, 'SWITCH', 'net'], [4, 2, 'VPS HOST 1', 'vps'], [6, 2, 'VPS HOST 2', 'vps'], [8, 2, 'VPS HOST 3', 'vps'], [10, 2, 'VPS HOST 4', 'vps'], [13, 2, 'MONITOR · KVM', 'managed'], [16, 4, 'BACKUP ARRAY A', 'backup'], [20, 4, 'BACKUP ARRAY B', 'backup'], [25, 1, 'MAIL GW 1', 'email'], [26, 1, 'MAIL GW 2', 'email'], [29, 14, 'CUSTOMER HARDWARE', 'colo']];
+const S = [
+{ k: 'vps', n: '01', name: 'VPS', units: 'U4–U11', fig: 'VIRTUAL MACHINES IN A HOST', text: 'VPS: each physical host is divided into several virtual servers. Yours gets its own dedicated slice of CPU, memory and storage.' },
+{ k: 'colo', n: '02', name: 'Colocation', units: 'U29–U42', fig: 'CUSTOMER CAGE', text: 'Colocation: your own servers live in a locked section of our cabinets, with our power, cooling and network.' },
+{ k: 'managed', n: '03', name: 'Managed Services', units: 'U13–U14', fig: 'MONITORING CONSOLE', text: 'Managed Services: our team monitors every component, keeps it patched, and fixes problems before they reach you.' },
+{ k: 'backup', n: '04', name: 'Backup', units: 'U16–U23', fig: 'TWO STORAGE ARRAYS', text: 'Backup: copies of your data are written to separate storage arrays, ready to restore.' },
+{ k: 'email', n: '05', name: 'Email Hosting', units: 'U25–U26', fig: 'MAIL ROUTING', text: 'Email Hosting: mail gateways route your messages to every inbox on your domain.' }
+];
+const sel = this.state.sel; const cur = S[sel];
+const units = U.map((u) => { const y = top + (u[0] - 1) * uh, h = u[1] * uh - 2; const on = u[3] === cur.k; return { y: y.toFixed(1), h: h.toFixed(1), fill: on ? '#1268A9' : (u[3] === 'colo' ? 'rgba(216,234,248,0.04)' : '#092B50'), dash: u[3] === 'colo' ? '5 4' : 'none', ly: (y + Math.min(h, uh) / 2).toFixed(1), ty: (y + Math.min(h, uh) / 2 + 3).toFixed(1), label: u[2] }; });
+const tgt = U.filter((u) => u[3] === cur.k); const y0 = top + (tgt[0][0] - 1) * uh, y1 = top + (tgt[tgt.length - 1][0] - 1 + tgt[tgt.length - 1][1]) * uh; const ym = (y0 + y1) / 2;
+const leader = 'M316 ' + ym.toFixed(1) + ' H360 L' + (560 - 170 * 0.94).toFixed(1) + ' 330';
+const d = { vps: cur.k === 'vps', colo: cur.k === 'colo', managed: cur.k === 'managed', backup: cur.k === 'backup', email: cur.k === 'email' };
+const vmBoxes = [{ x: -102, tx: -96, bx: -96, s: 'VM-01' }, { x: 6, tx: 12, bx: 12, s: 'VM-02' }];
+const vmBoxes2 = [{ x: -102, tx: -96, bx: -96, s: 'VM-03' }, { x: 6, tx: 12, bx: 12, s: 'VM-04' }];
+const coloRacks = [-84, -30, 24].map((x) => ({ x, u: 'M' + (x + 6) + ' -56 H' + (x + 38) + ' M' + (x + 6) + ' -40 H' + (x + 38) + ' M' + (x + 6) + ' -24 H' + (x + 38) + ' M' + (x + 6) + ' -8 H' + (x + 38) + ' M' + (x + 6) + ' 8 H' + (x + 38) }));
+const probes = [[-130, -90], [130, -90], [-130, 80], [130, 80]].map((p) => ({ x: p[0], y: p[1], rx: p[0] - 6, ry: p[1] - 6 }));
+const btns = S.map((s, i) => { const on = i === sel; return { n: s.n, name: s.name, units: s.units, pressed: on ? 'true' : 'false', pick: () => this.setState({ sel: i, user: true }), style: 'display: flex; align-items: baseline; gap: 14px; padding: 14px 12px; min-height: 44px; cursor: pointer; font-family: inherit; color: #FFFFFF; border: none; border-bottom: 1px solid #55A4E0; background: ' + (on ? '#1268A9' : 'transparent') }; });
+return { units, leader, d, vmBoxes, vmBoxes2, coloRacks, probes, btns, cur: { n: cur.n, fig: cur.fig, text: cur.text } };
+}
+}
+</script>
+</body>
+</html>
