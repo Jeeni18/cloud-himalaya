@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 import type { ServiceValue, TopicValue } from '../content/contact'
 import { form, serviceOptions, topics } from '../content/contact'
+import { isCmsDisabled } from '../lib/cmsAvailability'
 import { getPayloadClient } from '../lib/getPayloadClient'
 import { isRateLimited } from '../lib/rateLimit'
 
@@ -104,6 +105,13 @@ export async function submitEnquiry(
       if (!fieldErrors[key]) fieldErrors[key] = issue.message
     }
     return { status: 'invalid', fieldErrors, values }
+  }
+
+  // A preview deployment has no database to save into. Validation above
+  // still runs, so the form behaves normally up to the point of saving,
+  // but success is never reported for a save that did not happen.
+  if (isCmsDisabled) {
+    return { status: 'error', message: form.previewMessage, values }
   }
 
   try {

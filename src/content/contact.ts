@@ -103,6 +103,10 @@ export const form = {
     `Thanks, we've got it. We'll reply within ${hours} working hours.`,
   errorMessage: `Something went wrong on our end. Call sales on ${siteInfo.phoneSales} and we'll help directly.`,
   rateLimitedMessage: "You've sent a few messages already -- give it a few minutes and try again.",
+  // Shown only on a preview deployment with no CMS connected
+  // (see src/lib/cmsAvailability.ts).
+  previewMessage:
+    'This is a design preview, so enquiries are not being stored or delivered yet. Your message was not sent.',
 }
 
 export const whatHappensNext = {

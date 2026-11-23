@@ -1,3 +1,4 @@
+import { isCmsDisabled } from './cmsAvailability'
 import { getPayloadClient } from './getPayloadClient'
 import type { Notice, Post } from '../payload-types'
 import { POST_CATEGORIES } from '../collections/Posts'
@@ -26,7 +27,20 @@ const FILTER_LABELS: Record<CategoryFilter, string> = {
 // Sidebar FILTER card counts (docs/design/insights/) -- one query per
 // category plus the total, all from the database, not guessed from
 // whatever happens to be on the current page.
+// Zero counts keep the filter row's designed shape when the CMS is absent
+// (see cmsAvailability.ts), instead of collapsing it to nothing.
+const EMPTY_CATEGORY_COUNTS: CategoryCount[] = [
+  { value: 'all', label: 'All', count: 0 },
+  ...POST_CATEGORIES.map((category) => ({
+    value: category.value,
+    label: FILTER_LABELS[category.value],
+    count: 0,
+  })),
+]
+
 export async function getCategoryCounts(): Promise<CategoryCount[]> {
+  if (isCmsDisabled) return EMPTY_CATEGORY_COUNTS
+
   const payload = await getPayloadClient()
 
   const [total, ...perCategory] = await Promise.all([
@@ -67,6 +81,10 @@ export async function getPosts({
   page?: number
   limit?: number
 }): Promise<PostsPage> {
+  if (isCmsDisabled) {
+    return { docs: [], totalDocs: 0, totalPages: 0, page, hasNextPage: false }
+  }
+
   const payload = await getPayloadClient()
 
   const result = await payload.find({
@@ -96,6 +114,8 @@ export async function getLatestPosts(limit: number): Promise<Post[]> {
 // yet, soonest first. role="status" (not alert) in the component, since
 // this is informational, not an urgent interruption.
 export async function getActivePinnedNotice(): Promise<Notice | null> {
+  if (isCmsDisabled) return null
+
   const payload = await getPayloadClient()
 
   const result = await payload.find({

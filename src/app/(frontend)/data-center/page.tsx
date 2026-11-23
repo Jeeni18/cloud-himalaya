@@ -2,6 +2,8 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { ContentPending } from '../../../components/ui/ContentPending'
+import { isCmsDisabled } from '../../../lib/cmsAvailability'
 import { getPayloadClient } from '../../../lib/getPayloadClient'
 
 // Workaround for a confirmed Next.js 16.3.3 + Payload 3.92.1 issue:
@@ -11,6 +13,9 @@ import { getPayloadClient } from '../../../lib/getPayloadClient'
 export const dynamic = 'force-dynamic'
 
 async function getDataCenter() {
+  // No database on a preview deployment, so there is nothing to read.
+  if (isCmsDisabled) return null
+
   const payload = await getPayloadClient()
   const dataCenter = await payload.findGlobal({ slug: 'data-center', overrideAccess: false })
 
@@ -33,7 +38,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DataCenterPage() {
   const dataCenter = await getDataCenter()
-  if (!dataCenter) notFound()
+  if (!dataCenter) {
+    if (isCmsDisabled) return <ContentPending title="Data center" />
+    notFound()
+  }
 
   return (
     <article className="mx-auto max-w-2xl px-6 py-16 text-text-primary">

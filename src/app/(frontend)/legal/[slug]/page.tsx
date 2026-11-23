@@ -2,6 +2,8 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { ContentPending } from '../../../../components/ui/ContentPending'
+import { isCmsDisabled } from '../../../../lib/cmsAvailability'
 import { getPayloadClient } from '../../../../lib/getPayloadClient'
 
 type LegalPageProps = {
@@ -9,6 +11,9 @@ type LegalPageProps = {
 }
 
 async function getLegalPage(slug: string) {
+  // No database on a preview deployment, so there is nothing to read.
+  if (isCmsDisabled) return null
+
   const payload = await getPayloadClient()
 
   const result = await payload.find({
@@ -37,7 +42,10 @@ export default async function LegalPage({ params }: LegalPageProps) {
   const { slug } = await params
   const page = await getLegalPage(slug)
 
-  if (!page) notFound()
+  if (!page) {
+    if (isCmsDisabled) return <ContentPending title="Legal" />
+    notFound()
+  }
 
   return (
     <article className="mx-auto max-w-2xl px-6 py-16 text-text-primary">
