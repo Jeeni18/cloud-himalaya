@@ -3,6 +3,8 @@
 // of surfacing later as a confusing runtime error deep in Payload or the DB
 // driver.
 
+import { randomBytes } from 'crypto'
+
 import { describePreviewFlag, isCmsDisabled } from './cmsAvailability'
 
 function requireEnv(name: string, hint?: string): string {
@@ -47,6 +49,16 @@ function requireSecret(name: string, minLength: number): string {
 // rather than reaching a real server.
 const PREVIEW_DATABASE_URL = 'postgresql://preview:preview@127.0.0.1:1/preview-no-database'
 
+// Likewise, nothing Payload signs in preview mode outlives the request that
+// created it, and /admin cannot be used at all. Generated per process rather
+// than committed, so there is no shared default secret in version control
+// that could be reused somewhere it would matter.
+function previewSecret(): string {
+  const provided = process.env.PAYLOAD_SECRET
+  if (provided && provided.trim() !== '') return provided
+  return randomBytes(32).toString('hex')
+}
+
 export const env = {
   DATABASE_URL: isCmsDisabled
     ? PREVIEW_DATABASE_URL
@@ -54,7 +66,5 @@ export const env = {
         'DATABASE_URL',
         `To deploy the frontend without a database instead, set PREVIEW_WITHOUT_CMS=true (${describePreviewFlag()}).`,
       ),
-  // Still required in preview mode: Payload signs with it, and a committed
-  // default would risk being reused somewhere it actually matters.
-  PAYLOAD_SECRET: requireSecret('PAYLOAD_SECRET', 16),
+  PAYLOAD_SECRET: isCmsDisabled ? previewSecret() : requireSecret('PAYLOAD_SECRET', 16),
 } as const

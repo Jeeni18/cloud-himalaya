@@ -30,31 +30,40 @@ Not usable in this mode:
 
 - `/admin`, which needs a database
 
+One pre-existing broken link is not related to the CMS: `/careers` is linked
+from the footer, the homepage "We're hiring" button and a section link, but
+that route has never been built, so it returns 404. Careers is still a pending
+requirement (see `docs/requirements.md`).
+
 ### Environment variables
 
-Set these in Vercel under Settings, Environment Variables:
+None are required. `PREVIEW_WITHOUT_CMS=true` is committed in
+`.env.production`, which Next.js loads during `next build` and `next start`,
+so the preview builds on any platform with nothing configured in a dashboard.
 
-| Variable              | Value                                     |
-| --------------------- | ----------------------------------------- |
-| `PREVIEW_WITHOUT_CMS` | `true`                                    |
-| `PAYLOAD_SECRET`      | a random string of at least 16 characters |
-
-`DATABASE_URL` is not required while `PREVIEW_WITHOUT_CMS` is `true`.
-
-Generate the secret locally and paste it into Vercel. Do not commit it:
-
-```
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
+`PAYLOAD_SECRET` is optional in this mode: a random value is generated per
+process, because nothing it signs outlives the request that created it and
+`/admin` cannot be used without a database. Setting a real one is harmless.
 
 ### How the flag behaves
 
-`src/lib/cmsAvailability.ts` exports `isCmsDisabled`, read from
-`PREVIEW_WITHOUT_CMS`. It is opt-in and off by default, so a genuine database
-outage in production still fails loudly rather than quietly serving an empty
-site. Query errors are never caught; only the explicit flag skips a read.
+`src/lib/cmsAvailability.ts` exports `isCmsDisabled`, which is true only when
+both conditions hold: `PREVIEW_WITHOUT_CMS` is set to a truthy value, and no
+`DATABASE_URL` is configured.
 
-Remove the variable from Vercel once a real database is connected.
+A real `DATABASE_URL` always wins. That has two consequences worth knowing:
+
+- Configuring a database switches the CMS back on with no code change. The
+  committed flag becomes inert, so it cannot silently disable a working CMS.
+- A genuine outage on a configured database still fails loudly, rather than
+  quietly serving an empty site. Query errors are never caught; only the
+  combination above skips a read.
+
+If neither a `DATABASE_URL` nor the flag is present, startup validation fails
+with a message naming both options and reporting the flag's current state, so
+a failed deployment says which one is missing.
+
+Delete `.env.production` once the database is permanent.
 
 ## Still required before a real deployment
 
