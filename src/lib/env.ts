@@ -3,22 +3,21 @@
 // of surfacing later as a confusing runtime error deep in Payload or the DB
 // driver.
 
-import { isCmsDisabled } from './cmsAvailability'
+import { describePreviewFlag, isCmsDisabled } from './cmsAvailability'
 
-function requireEnv(name: string): string {
+function requireEnv(name: string, hint?: string): string {
   const value = process.env[name]
 
   if (!value || value.trim() === '') {
-    throw new Error(
-      `Missing required environment variable "${name}". Copy .env.example to .env and fill in a real value.`,
-    )
+    const base = `Missing required environment variable "${name}". Copy .env.example to .env and fill in a real value.`
+    throw new Error(hint ? `${base} ${hint}` : base)
   }
 
   return value
 }
 
-function requirePostgresUrl(name: string): string {
-  const value = requireEnv(name)
+function requirePostgresUrl(name: string, hint?: string): string {
+  const value = requireEnv(name, hint)
 
   if (!value.startsWith('postgres://') && !value.startsWith('postgresql://')) {
     throw new Error(
@@ -44,12 +43,17 @@ function requireSecret(name: string, minLength: number): string {
 // A preview deployment has no database (see cmsAvailability.ts), so there is
 // no real connection string to require. Payload still needs a syntactically
 // valid one to build its config, and this address is deliberately
-// unroutable, so any query that is not guarded by fromCms() fails fast
+// unroutable, so any query not guarded by an isCmsDisabled check fails fast
 // rather than reaching a real server.
 const PREVIEW_DATABASE_URL = 'postgresql://preview:preview@127.0.0.1:1/preview-no-database'
 
 export const env = {
-  DATABASE_URL: isCmsDisabled ? PREVIEW_DATABASE_URL : requirePostgresUrl('DATABASE_URL'),
+  DATABASE_URL: isCmsDisabled
+    ? PREVIEW_DATABASE_URL
+    : requirePostgresUrl(
+        'DATABASE_URL',
+        `To deploy the frontend without a database instead, set PREVIEW_WITHOUT_CMS=true (${describePreviewFlag()}).`,
+      ),
   // Still required in preview mode: Payload signs with it, and a committed
   // default would risk being reused somewhere it actually matters.
   PAYLOAD_SECRET: requireSecret('PAYLOAD_SECRET', 16),

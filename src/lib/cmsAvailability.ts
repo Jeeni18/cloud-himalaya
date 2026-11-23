@@ -9,4 +9,19 @@
 // of silently serving an empty site. Only this explicit flag suppresses a
 // read; query errors are never swallowed.
 
-export const isCmsDisabled = process.env.PREVIEW_WITHOUT_CMS === 'true'
+const TRUTHY = ['true', '1', 'yes', 'on']
+
+// Trimmed and lower-cased, and several spellings accepted, because this is
+// typed by hand into a deployment platform's settings UI where a stray
+// capital or space is easy to introduce and hard to spot.
+const rawPreviewFlag = process.env.PREVIEW_WITHOUT_CMS
+
+export const isCmsDisabled = TRUTHY.includes((rawPreviewFlag ?? '').trim().toLowerCase())
+
+// Reported in the environment-validation error, so a failed deployment says
+// whether the flag arrived at all instead of only that a variable is
+// missing. The flag is a plain on/off switch, never a secret.
+export function describePreviewFlag(): string {
+  if (rawPreviewFlag === undefined) return 'PREVIEW_WITHOUT_CMS is not set'
+  return `PREVIEW_WITHOUT_CMS is set to "${rawPreviewFlag}"`
+}
