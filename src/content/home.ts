@@ -24,7 +24,7 @@ export const siteInfo = {
   asn: '135337',
   isoLine: 'ISO 27001',
   addressKathmandu: '4th Floor, Central Business Park, Thapathali',
-  addressDr: 'DR: Rai Shopping Complex, Itahari, Sunsari',
+  addressDr: 'DR: Labipur, Ward No. 17 (Thapa Tole), Itahari, Sunsari, Koshi Pradesh',
   addressUs: 'US: 11 Broadway 454, New York, NY 10004',
   // The client portal URL lives in src/config/site.ts (read from
   // CLIENT_PORTAL_URL), not here -- it is deployment configuration
