@@ -269,7 +269,7 @@ Every section's **copy is exact** — use it as written. Text in `[BRACKETS]` is
   2. **Services**: Colocation, VPS, Managed Services, Web Hosting, Email Hosting
   3. **Company**: About Us, Insights, Careers, Contact Us, Client Login ↗ (external)
   4. **Kathmandu**: `4th Floor, Central Business Park, Thapathali` / `+977-01-5351669` / `info@cloudhimalaya.com`
-  5. **Other offices**: `DR: Labipur, Ward No. 17 (Thapa Tole), Itahari, Sunsari, Koshi Pradesh` / `US: 11 Broadway 454, New York, NY 10004`
+  5. **Other offices**: `DR: Cloud Himalaya Pvt. Ltd., Labipur, Ward No. 17 (Thapa Tole), Itahari, Sunsari, Koshi Pradesh` / `US: 11 Broadway 454, New York, NY 10004`
   - Column headings in `#FFFFFF`, 600.
 - Bottom bar: top border `footer-line`, padding 20px 24px 32px, 14px, wraps: `© {current year} Cloud Himalaya Pvt. Ltd.` … links `Privacy Policy` `/legal/privacy`, `Terms of Service` `/legal/terms`, `SLA` `/legal/sla`, `Acceptable Use` `/legal/aup`.
 
