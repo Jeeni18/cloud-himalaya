@@ -94,6 +94,23 @@ export const hero = {
     "Colocation, VPS and managed services from Kathmandu's self-owned data center, replicated to Itahari.",
   primaryCta: { label: 'Find the right service →', href: '/services' },
   secondaryCta: { label: 'Book a data center tour', href: '/contact-us?type=tour' },
+  // Overhead row signs drawn into the hero's aisle background, cycled
+  // front to back (components/hero/AisleBackground.tsx).
+  aisleSigns: [
+    'ROW A · COLOCATION',
+    'ROW B · VPS HOSTS',
+    'ROW C · MANAGED',
+    'ROW D · WEB + MAIL',
+    'NOC · MONITORED 24×7',
+  ],
+  // Glass cards in the hero's bottom-right corner. "[Confirm]" values
+  // elsewhere on the site flag unverified claims; these three are the
+  // same figures already used by the data center section.
+  stats: [
+    { label: 'UPTIME COMMITMENT', value: '99.995%' },
+    { label: 'REPLICATED TO', value: 'Itahari DR' },
+    { label: 'NETWORK', value: '40 Gbps fiber' },
+  ],
 }
 
 export type RackUnit = {

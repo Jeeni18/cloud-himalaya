@@ -86,9 +86,14 @@ export function ServicesBlueprint() {
     // don't actually diverge here.
     <div className="flex flex-col-reverse gap-9 lg:flex-row lg:items-start" ref={wrapperRef}>
       <div className="min-w-0 lg:max-w-[52%] lg:flex-[3]">
+        {/* The drawing is nearly square (760x720), so a full-width SVG
+            becomes as tall as it is wide -- on a tablet that alone was
+            ~660px, pushing the rest of the section off-screen. Capping
+            the height lets it scale down (and centre) on short or
+            medium screens instead of dictating the section's height. */}
         <svg
           aria-label={servicesBlueprint.ariaLabel}
-          className="block h-auto w-full"
+          className="mx-auto block h-auto max-h-[min(58svh,520px)] w-full"
           overflow="visible"
           role="img"
           viewBox="0 0 760 720"

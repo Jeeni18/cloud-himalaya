@@ -113,12 +113,16 @@ A distinctive display font for headlines (not Inter or a default system font), a
 
 ### Hero (homepage)
 
-- Concept: "Infrastructure built at altitude."
-- Layered Himalayan mountain ridgelines along the lower part of the hero: three layers, farther layers paler, each a flat colour with a hairline edge.
-- Soft, slightly 3D-looking clouds (highlight on top, shadowed underside, rounded puffs with flatter bases) drifting very slowly between the mountain layers, with parallax (nearer clouds larger and slightly faster).
-- Headline area on the left stays on clean, empty sky for readability.
-- The final ridgeline will be traced from a real photo of the Himalayan skyline and supplied as an SVG. Until then, use a placeholder and make the ridgeline data easy to replace.
-- Motion rules: very slow and calm; pause when the hero is off-screen or the tab is hidden; render a static version when `prefers-reduced-motion` is set; smooth on mid-range phones; no layout shift; must not block the main thread or hurt Largest Contentful Paint.
+Built, 2026-11-24. This replaces the earlier mountains-and-clouds hero ("Infrastructure built at altitude"): layered Himalayan ridgelines, drifting 3D clouds and their parallax are **no longer used in the hero**. The ridgeline motif still appears elsewhere as a section divider (`components/ui/SectionRidge.tsx`), so it has not left the site entirely.
+
+- Concept: "Walk the aisle." The visitor looks down a data hall aisle that glides slowly forward, so the first thing they see is the facility itself rather than scenery.
+- Reference: `docs/design/hero-aisle/` (target PNGs plus a working prototype). Implemented in `components/hero/AisleBackground.tsx`, with its two colour sets in `components/hero/aisle-theme.ts`.
+- A `<canvas>` fills the hero behind the copy: perspective floor tiles, glowing cold-aisle tiles, racks on both sides with blinking equipment LEDs, overhead row signs, ceiling lamps, and a glow at the vanishing point. Plain canvas 2D — no animation library.
+- The copy sits on the left over a horizontal fade that keeps it readable. The fade is **contrast-driven, not decorative**: the prototype's own stops left the paragraph at 2.4:1 in light mode, so they were widened. Any change to the fade, the copy width or the hero text colours must be re-checked against WCAG AA at the point where the fade is weakest behind text.
+- Theme comes from `next-themes` (`resolvedTheme`); the canvas switches colour sets on the next frame, with no reload.
+- Three glass stat cards sit bottom-right on desktop; below 1024px they move under the buttons, and below 360px they are hidden.
+- Motion rules (unchanged, and all still apply): very slow and calm; pause when the hero is off-screen or the tab is hidden; draw a single still frame when `prefers-reduced-motion` is set; smooth on mid-range phones; no layout shift; must not block the main thread or hurt Largest Contentful Paint. The glide is time-based, so it runs at the same speed on 60Hz and 120Hz screens.
+- The hero copy is server-rendered and visible immediately; the canvas paints behind it after mount. The section background matches the canvas background so there is no flash of a different shade in between.
 
 ### Homepage scroll effect
 

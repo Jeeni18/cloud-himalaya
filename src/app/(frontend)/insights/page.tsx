@@ -26,11 +26,12 @@ function parsePage(value: string | undefined): number {
   return Number.isInteger(page) && page > 0 ? page : 1
 }
 
+
 export const metadata: Metadata = {
   title: seo.title,
   description: seo.description,
   alternates: {
-    types: { 'application/rss+xml': '/insights/rss.xml' },
+  types: { 'application/rss+xml': '/insights/rss.xml' },
   },
 }
 

@@ -286,10 +286,13 @@
   --text-lp-h1: clamp(1.875rem, 1.3rem + 2.1vw, 3rem);
   --text-lp-h1--line-height: 1.05;
   --text-lp-h1--letter-spacing: -0.025em;
-  /* Responsive-homepage spec's exact numbers for every section heading
-     below the hero (SectionHeading.tsx) -- defined once here, so every
-     section picks it up just by using that shared component. */
-  --text-lp-h2: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+  /* Every section heading below the hero (SectionHeading.tsx) --
+     defined once here, so every section picks it up just by using that
+     shared component. The ceiling is deliberately below the original
+     spec's 2.75rem: at that size a two-line heading plus its eyebrow
+     and lead paragraph ate most of a short laptop screen before any
+     real content appeared. */
+  --text-lp-h2: clamp(1.625rem, 1.1rem + 1.5vw, 2.375rem);
   --text-lp-h2--line-height: 1.08;
   --text-lp-h2--letter-spacing: -0.025em;
   --text-lp-h3: clamp(1.25rem, 1rem + 0.8vw, 1.6rem);
@@ -316,6 +319,46 @@
 }
 
 /*
+ * "Walk the aisle" hero (docs/design/hero-aisle/). These are scoped to
+ * the hero rather than folded into the sitewide --lp-* tokens: the
+ * reference's dark hero text sits a shade apart from the rest of the
+ * site (#F1F8FF vs #FFFFFF, #55BDF0 vs #5CC2F0, and so on), and every
+ * other page should keep the shared values.
+ *
+ * --hero-aisle matches AisleBackground's own canvas background exactly,
+ * so the section shows the right colour before the canvas first paints.
+ * The light values are the site's existing head/accent/muted, unchanged.
+ */
+:root {
+  --hero-aisle: #eef5fb;
+  --hero-head: #0b1f3a;
+  --hero-accent: #0954a6;
+  --hero-body: #3a4d66;
+  --hero-card: rgba(255, 255, 255, 0.78);
+  --hero-card-border: rgba(255, 255, 255, 0.9);
+  --hero-card-label: #3a6290;
+  --hero-card-value: #0c2a4d;
+}
+
+.dark {
+  --hero-aisle: #0a1c31;
+  --hero-head: #f1f8ff;
+  --hero-accent: #55bdf0;
+  --hero-body: #bcd2e4;
+  --hero-card: rgba(20, 43, 69, 0.72);
+  --hero-card-border: rgba(85, 164, 224, 0.35);
+  --hero-card-label: #91acc3;
+  --hero-card-value: #f1f8ff;
+}
+
+/* The hero's primary button is brighter than the sitewide primary in
+   dark mode, so it holds up against the dark aisle behind it. */
+.dark .hero-primary-cta {
+  background-color: #35a9e0;
+  color: #0e2236;
+}
+
+/*
  * Shared container spacing for every homepage section below the hero
  * (ClientLogos, AboutPreview, ServicesListPreview, DataCenterPreview,
  * InsightsPreview, ContactPreview) -- defined once and reused via
@@ -324,7 +367,22 @@
  */
 :root {
   --section-x: clamp(1rem, 4vw, 2rem);
-  --section-y: clamp(3rem, 6vw, 6rem);
+  --section-y: clamp(2.5rem, 4.5vw, 4.5rem);
+}
+
+/*
+ * Section padding scales with viewport WIDTH, but whether a section
+ * fits depends on viewport HEIGHT -- a 1536x730 laptop (a 1920 screen
+ * at 125% Windows scaling) is wide enough to earn the maximum padding
+ * while being too short to afford it, which is what made every section
+ * run past the bottom of the screen. Short-and-wide screens therefore
+ * get a tighter vertical rhythm. Same media query as the `short-laptop`
+ * variant above, so the hero and the sections stay in step.
+ */
+@media (max-height: 820px) and (min-width: 1024px) {
+  :root {
+    --section-y: 2.75rem;
+  }
 }
 
 /*
@@ -612,6 +670,14 @@
 @theme inline {
   --color-hero-sky: var(--hero-sky);
   --color-hero-night: var(--hero-night);
+  --color-hero-aisle: var(--hero-aisle);
+  --color-hero-head: var(--hero-head);
+  --color-hero-accent: var(--hero-accent);
+  --color-hero-body: var(--hero-body);
+  --color-hero-card: var(--hero-card);
+  --color-hero-card-border: var(--hero-card-border);
+  --color-hero-card-label: var(--hero-card-label);
+  --color-hero-card-value: var(--hero-card-value);
 }
 
 /*

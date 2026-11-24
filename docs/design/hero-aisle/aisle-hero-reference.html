@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cloud Himalaya · Hero "Walk the aisle" reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Geist',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+:root{--top:#0954A6;--hdr:#F6F9FC;--hdrbd:#DCE8F3;--nav:#103D70;--ink:#0C2A4D;--acc:#0954A6;--body:#1C4570;--badge:#fff;--badgebd:#DCE8F3;--chip:#E4F0FA;--b1:#0954A6;--b1t:#fff;--b2:#fff;--b2t:#0C2A4D;--b2bd:#DCE8F3;--card:rgba(255,255,255,.78);--cardbd:rgba(255,255,255,.9);--lab:#3A6290}
+.dark{--top:#142B45;--hdr:#0F2238;--hdrbd:#1E3A5C;--nav:#F1F8FF;--ink:#F1F8FF;--acc:#55BDF0;--body:#BCD2E4;--badge:#142B45;--badgebd:#365873;--chip:#294C6C;--b1:#35A9E0;--b1t:#0E2236;--b2:#1B3652;--b2t:#F1F8FF;--b2bd:#365873;--card:rgba(20,43,69,.72);--cardbd:rgba(85,164,224,.35);--lab:#91ACC3}
+.top{background:var(--top);color:#fff;font-size:13px;display:flex;gap:24px;padding:9px 40px}
+.hdr{background:var(--hdr);border-bottom:1px solid var(--hdrbd);display:flex;align-items:center;gap:28px;padding:0 40px;height:68px}
+.logo{font-weight:700;font-size:22px;color:#29A3DC}.logo span{color:var(--acc)}
+.hdr nav{margin-left:auto;display:flex;gap:26px;font-size:15px;font-weight:500;color:var(--nav)}
+.q{background:var(--b1);color:var(--b1t);padding:10px 16px;border-radius:10px;font-weight:600;font-size:15px}
+.tog{width:40px;height:40px;border-radius:50%;border:1px solid var(--hdrbd);background:transparent;color:var(--nav);cursor:pointer;font-size:16px}
+.hero{position:relative;height:calc(100svh - 106px);min-height:560px;overflow:hidden}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.copy{position:absolute;z-index:2;left:max(40px,calc(50% - 600px));top:50%;transform:translateY(-50%);width:min(560px,44%)}
+.badge{display:inline-flex;gap:10px;align-items:center;background:var(--badge);border:1px solid var(--badgebd);border-radius:999px;padding:6px 16px 6px 6px;font-size:15px;color:var(--body)}
+.badge b{font-family:'Geist Mono',monospace;font-weight:500;background:var(--chip);color:var(--acc);padding:3px 9px;border-radius:6px;font-size:14px}
+h1{font-size:clamp(2.25rem,1.2rem + 3.2vw,4.25rem);line-height:1.05;letter-spacing:-.02em;font-weight:600;margin-top:22px;color:var(--ink)}h1 span{color:var(--acc)}
+.copy p{font-size:clamp(1rem,.9rem + .35vw,1.2rem);line-height:1.55;margin-top:18px;color:var(--body);max-width:36rem}
+.btns{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.b1,.b2{font-weight:600;font-size:16px;padding:13px 22px;border-radius:12px;border:1px solid transparent}
+.b1{background:var(--b1);color:var(--b1t)}.b2{background:var(--b2);color:var(--b2t);border-color:var(--b2bd)}
+.stats{position:absolute;z-index:2;right:max(40px,calc(50% - 600px));bottom:34px;display:flex;gap:10px}
+.stats div{background:var(--card);backdrop-filter:blur(10px);border:1px solid var(--cardbd);border-radius:14px;padding:12px 16px}
+.stats small{display:block;font-family:'Geist Mono',monospace;font-size:11px;color:var(--lab)}.stats b{font-size:22px;font-weight:600;color:var(--ink)}
+@media (max-width:1023px){.copy{width:auto;right:24px;left:24px}.stats{display:none}}
+</style></head><body>
+<div class="top"><span>+977-01-5351669</span><span>Sales: +977-9802300610</span><span>NOC: +977-9801249898/99</span><span>info@cloudhimalaya.com</span></div>
+<div class="hdr"><div class="logo">CLOUD <span>HIMALAYA</span></div><nav><span>About Us</span><span>Services</span><span>Insights</span><span>Contact Us</span><span>Client Login ↗</span></nav><span class="q">Get a quote</span><button class="tog" id="tog" aria-label="Toggle theme">☾</button></div>
+<section class="hero" id="hero"><canvas id="c" aria-hidden="true"></canvas>
+<div class="copy"><span class="badge"><b>ISO 27001</b>Kathmandu's data center since 2013</span>
+<h1>We Take Care of your Data.<br><span>You Take Care of your Business.</span></h1>
+<p>Colocation, VPS and managed services from Kathmandu's self-owned data center, replicated to Itahari.</p>
+<div class="btns"><span class="b1">Find the right service →</span><span class="b2">Book a data center tour</span></div></div>
+<div class="stats"><div><small>UPTIME COMMITMENT</small><b>99.995%</b></div><div><small>REPLICATED TO</small><b>Itahari DR</b></div><div><small>NETWORK</small><b>40 Gbps fiber</b></div></div>
+</section>
+<script>
+const TH={
+ l:{bg:'#EEF5FB',tile:'rgba(9,84,166,.14)',cold:'rgba(41,163,220,.10)',r0:[15,34,56],fog:[225,239,246],sign:'#FFFFFF',signT:'#0954A6',lamp:'255,255,255',glow:'rgba(255,255,255,.75)',glow0:'rgba(255,255,255,0)',fade:a=>`rgba(246,250,254,${a})`},
+ d:{bg:'#0A1C31',tile:'rgba(85,164,224,.16)',cold:'rgba(41,163,220,.14)',r0:[20,43,69],fog:[10,28,49],sign:'#142B45',signT:'#78D0FA',lamp:'120,208,250',glow:'rgba(41,163,220,.35)',glow0:'rgba(41,163,220,0)',fade:a=>`rgba(10,28,49,${a})`}};
+let DARK=new URLSearchParams(location.search).get('theme')==='dark';
+const hero=document.getElementById('hero'),cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const apply=()=>{document.body.classList.toggle('dark',DARK);document.getElementById('tog').textContent=DARK?'☀':'☾';};apply();
+document.getElementById('tog').onclick=()=>{DARK=!DARK;apply();};
+let W=0,H=0;const DPR=Math.min(2,devicePixelRatio||1);
+function resize(){const r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',resize);
+const rr=(g,x,y,w,h,r)=>{g.beginPath();g.roundRect(x,y,w,h,r);};
+let draw0;
+/* ===== 13. Walk the aisle (light perspective, mouse look, forward glide) ===== */
+let m0={x:.5,y:.5},z0=0;
+hero.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();m0={x:(e.clientX-r.left)/W,y:(e.clientY-r.top)/H};});
+const SIGNS=['ROW A · COLOCATION','ROW B · VPS HOSTS','ROW C · MANAGED','ROW D · WEB + MAIL','NOC · MONITORED 24×7'];
+draw0=(t)=>{const g=ctx;const T=DARK?TH.d:TH.l;if(!RM)z0+=.45;
+ const vx=W*.72+(m0.x-.5)*-160,vy=H*.48+(m0.y-.5)*-70,f=420;
+ g.fillStyle=T.bg;g.fillRect(0,0,W,H);
+ const P=(x,y,z)=>[vx+x*f/z,vy+y*f/z];
+ // floor tiles
+ const zMin=40,zMax=2400,step=120,off=z0%step;
+ g.strokeStyle=T.tile;g.lineWidth=1;
+ for(let z=zMin+step-off;z<zMax;z+=step){const a=P(-170,150,z),b=P(170,150,z);g.beginPath();g.moveTo(...a);g.lineTo(...b);g.stroke();}
+ for(let x=-170;x<=170;x+=56){const a=P(x,150,zMin),b=P(x,150,zMax);g.beginPath();g.moveTo(...a);g.lineTo(...b);g.stroke();}
+ // perforated cold aisle tiles glow
+ for(let z=zMin+step-off;z<zMax;z+=step*2){const a=P(-40,150,z),b=P(40,150,z),c=P(40,150,z+step),d=P(-40,150,z+step);g.fillStyle=T.cold;g.beginPath();g.moveTo(...a);g.lineTo(...b);g.lineTo(...c);g.lineTo(...d);g.fill();}
+ // racks both sides, far to near
+ const rs=[];for(let z=zMax-((z0)%160);z>zMin;z-=160)rs.push(z);
+ rs.forEach((z,idx)=>{const id=Math.floor((z0+z)/160);
+  [-1,1].forEach(side=>{const x0=side*170,x1=side*300;const tl=P(x0,-150,z),bl=P(x0,150,z),tr=P(x0,-150,z+130),br=P(x0,150,z+130),ol=P(x1,-150,z);
+   const fogA=Math.min(1,z/zMax*1.3);
+   g.fillStyle=`rgb(${Math.round(T.r0[0]+(T.fog[0]-T.r0[0])*fogA)},${Math.round(T.r0[1]+(T.fog[1]-T.r0[1])*fogA)},${Math.round(T.r0[2]+(T.fog[2]-T.r0[2])*fogA)})`;
+   g.beginPath();g.moveTo(...tl);g.lineTo(...tr);g.lineTo(...br);g.lineTo(...bl);g.closePath();g.fill();
+   g.strokeStyle=`rgba(85,164,224,${.5*(1-fogA)})`;g.stroke();
+   // LEDs
+   if(fogA<.85)for(let u=0;u<10;u++){const yy=-130+u*27;const p1=P(x0,yy,z+20),p2=P(x0,yy,z+110);
+    g.strokeStyle=`rgba(36,80,122,${1-fogA})`;g.lineWidth=Math.max(.5,3*(1-fogA));g.beginPath();g.moveTo(...p1);g.lineTo(...p2);g.stroke();
+    if(((u*7+id*3+side+Math.floor(t/350))%6)<3){const pl=P(x0,yy,z+105+(u%2)*-8);g.fillStyle=(u+id)%4?'#2BB673':'#29A3DC';g.globalAlpha=1-fogA;g.beginPath();g.arc(pl[0],pl[1],Math.max(1,3.2*(1-fogA)),0,7);g.fill();g.globalAlpha=1;}}
+   // overhead cable tray + sign
+   if(side===1&&id%3===0&&fogA<.6){const s1=P(-170,-200,z),s2=P(170,-200,z);g.strokeStyle=`rgba(9,84,166,${.6*(1-fogA)})`;g.lineWidth=2;g.beginPath();g.moveTo(...s1);g.lineTo(...s2);g.stroke();
+    const sc=420/z;const sw=150*sc*1.6,sh=24*sc*1.6,sx=(s1[0]+s2[0])/2-sw/2,sy=s1[1]+4*sc;if(sw>40&&sw<380){g.globalAlpha=1-fogA;g.fillStyle=T.sign;rr(g,sx,sy,sw,sh,4*sc);g.fill();g.fillStyle=T.signT;g.font=`${Math.max(8,11*sc*1.6)}px 'Geist Mono',monospace`;g.textAlign='center';g.fillText(SIGNS[Math.abs(Math.floor(id/3))%5],sx+sw/2,sy+sh*.68);g.textAlign='left';g.globalAlpha=1;}}
+  });});
+ // ceiling lights
+ for(let z=zMin+80-(z0%240);z<zMax;z+=240){const a=P(-30,-230,z),b=P(30,-230,z);g.strokeStyle=`rgba(${T.lamp},${1-z/zMax})`;g.lineWidth=Math.max(1,8*420/z);g.beginPath();g.moveTo(...a);g.lineTo(...b);g.stroke();}
+ const vg=g.createRadialGradient(vx,vy,0,vx,vy,240);vg.addColorStop(0,T.glow);vg.addColorStop(1,T.glow0);g.fillStyle=vg;g.fillRect(0,0,W,H);
+ const lf=g.createLinearGradient(0,0,W,0);lf.addColorStop(0,T.fade(.97));lf.addColorStop(.3,T.fade(.9));lf.addColorStop(.48,T.fade(.35));lf.addColorStop(.62,T.fade(0));g.fillStyle=lf;g.fillRect(0,0,W,H);};
+
+
+resize();(function loop(t){draw0(t);requestAnimationFrame(loop);})(0);
+</script></body></html>
